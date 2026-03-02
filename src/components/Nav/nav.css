@@ -1,0 +1,38 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: Max(48px, 3rem);
+  padding: 0.5rem 2.75rem;
+  background-color: #fcfcfd;
+  border-bottom: 1px solid #050c2924;
+}
+.navbar__storefront {
+  font-weight: 600;
+  font-size: 0.75rem;
+  font-style: normal;
+  line-height: 120%;
+  color: #1f2022;
+}
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.navbar__links button {
+  width: Max(3.313rem, 53px);
+  height: Max(2rem, 32px);
+  border-radius: 4px;
+  background-color: transparent;
+  color: #626469;
+  font-weight: 400;
+  font-size: 0.75rem;
+  font-style: normal;
+  line-height: 120%;
+  transition: all 0.3s ease-in-out;
+}
+.navbar__links button:hover {
+  background-color: #626469;
+  color: #ffffff;
+  transition: all 0.3s ease-in-out;
+}

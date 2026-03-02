@@ -1,0 +1,30 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e8e8ec;
+  padding: 1.5rem 2.75rem;
+  height: Max(110px, 6.875rem);
+}
+.footer__info {
+  h1 {
+    color: #1c2024;
+    font-size: Max(1.5rem, 24px);
+    line-height: 130%;
+    line-height: -0.1px;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  h2 {
+    color: #60646c;
+    font-weight: 400;
+    font-size: Max(1rem, 16px);
+    line-height: 150%;
+  }
+}
+h3 {
+  color: #60646c;
+  font-weight: 400;
+  font-size: Max(1rem, 16px);
+  line-height: 150%;
+}
