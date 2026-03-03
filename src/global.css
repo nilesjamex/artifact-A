@@ -18,5 +18,5 @@ button {
 
 .layout__container {
   min-height: calc(100vh - Max(110px, 6.875rem) - Max(48px, 3rem));
-  padding: 0.75rem 2.75rem;
+  padding: 2.75rem 2.75rem;
 }
