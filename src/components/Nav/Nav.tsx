@@ -10,7 +10,11 @@ export const Nav = component$(() => {
   const cartCount = useSignal(0);
   return (
     <div class="navbar">
-      <h1 class="navbar__storefront">StoreFront</h1>
+      <Link href="/">
+        <h1 role="button" class="navbar__storefront">
+          StoreFront
+        </h1>
+      </Link>
       <div class="navbar__links">
         <Link href="/shop">
           <button type="button">shop</button>
