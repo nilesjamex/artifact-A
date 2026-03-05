@@ -1,12 +1,12 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, useSignal, type Signal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import "./Nav.css";
 
-// export interface NavProps {
+export interface NavProps {
+  openCart: Signal<boolean>;
+}
 
-// }
-
-export const Nav = component$(() => {
+export const Nav = component$<NavProps>(({ openCart }) => {
   const cartCount = useSignal(0);
   return (
     <div class="navbar">
@@ -19,7 +19,15 @@ export const Nav = component$(() => {
         <Link href="/shop">
           <button type="button">shop</button>
         </Link>
-        <button type="button">cart ({cartCount.value})</button>
+        <button
+          type="button"
+          onClick$={() => {
+            openCart.value = !openCart.value;
+            console.log(openCart.value);
+          }}
+        >
+          cart ({cartCount.value})
+        </button>
       </div>
     </div>
   );
