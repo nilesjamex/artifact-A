@@ -1,10 +1,13 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, type Signal } from "@builder.io/qwik";
 import { LuChevronRight, LuMinus, LuPlus, LuX } from "@qwikest/icons/lucide";
 import Media from "../../assets/cart.png?quality=80&jsx";
 import "./checkout.css";
 
-export const CheckOutCart = component$(() => {
-  const breadcrumb = useSignal(1);
+export interface StageProp {
+  step: Signal<number>;
+}
+
+export const CheckOutCart = component$<StageProp>(({ step }) => {
   const cartItems = [
     {
       id: 1,
@@ -39,9 +42,9 @@ export const CheckOutCart = component$(() => {
     <div class="ccart">
       <div class="ccart__breadcrumb">
         <h5
-          class={`${breadcrumb.value === 1 ? "active" : ""}`}
+          class={`${step.value === 1 ? "active" : ""}`}
           onClick$={() => {
-            breadcrumb.value = 1;
+            step.value = 1;
           }}
           role="button"
         >
@@ -49,9 +52,9 @@ export const CheckOutCart = component$(() => {
         </h5>
         <LuChevronRight class="ccart__chevron" />
         <h5
-          class={`${breadcrumb.value === 2 ? "active" : ""}`}
+          class={`${step.value === 2 ? "active" : ""}`}
           onClick$={() => {
-            breadcrumb.value = 2;
+            step.value = 2;
           }}
           role="button"
         >
