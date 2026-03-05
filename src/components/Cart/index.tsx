@@ -1,4 +1,5 @@
 import { component$, type Signal } from "@builder.io/qwik";
+import { Link } from "@builder.io/qwik-city";
 import "./cart.css";
 import { LuChevronRight, LuMinus, LuPlus, LuX } from "@qwikest/icons/lucide";
 import Media from "../../assets/cart.png?quality=80&jsx";
@@ -43,7 +44,7 @@ export const Cart = component$<CartProps>(({ openCart }) => {
       <div class={`cart__content ${openCart.value ? "" : "active"}`}>
         <div class="cart__header">
           <h4>
-            Cart <span>&#40;0 items&#41;</span>
+            Cart <span>&#40;{cartItems.length} items&#41;</span>
           </h4>
           <div
             class="cart__header__close"
@@ -89,7 +90,15 @@ export const Cart = component$<CartProps>(({ openCart }) => {
             <h5>Subtotal</h5>
             <h6>112.96 USDC</h6>
           </div>
-          <button>Checkout</button>
+          <Link href="/checkout">
+            <button
+              onClick$={() => {
+                openCart.value = !openCart.value;
+              }}
+            >
+              Checkout
+            </button>
+          </Link>
         </div>
       </div>
     </div>
