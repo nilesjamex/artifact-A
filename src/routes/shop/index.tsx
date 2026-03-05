@@ -190,7 +190,7 @@ export const head: DocumentHead = {
     {
       name: "shop Main Shop Page",
       content:
-        "Welcome to the Postman Store! Explore our exclusive merchandise, including T-shirts, mugs, and sticker packs. Show off your love for Postman with our high-quality products designed for developers and API enthusiasts alike.",
+        "Welcome to StoreFront! Explore our exclusive merchandise, including T-shirts, mugs, and sticker packs. Show off your love for Postman with our high-quality products designed for developers and API enthusiasts alike.",
     },
   ],
 };
