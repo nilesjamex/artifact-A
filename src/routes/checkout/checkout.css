@@ -1,0 +1,19 @@
+.ccart__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-left: 5rem;
+  h5 {
+    color: #a5a7ad;
+    font-weight: 13px;
+    line-height: 125%;
+    font-weight: 500;
+    cursor: pointer;
+  }
+}
+.ccart__breadcrumb h5.active {
+  color: #1f2022;
+}
+.ccart__chevron {
+  color: #a5a7ad;
+}
