@@ -93,7 +93,7 @@
 }
 .shop__card {
   width: Min(320px, 100%);
-  height: 372px;
+  height: auto;
   margin-bottom: 1.5rem;
 }
 .image__container {
@@ -129,4 +129,21 @@
   line-height: 125%;
   font-weight: 600;
   color: #1c2024;
+}
+.shop__card button {
+  width: 100%;
+  background-color: #23375f0d;
+  width: 100%;
+  height: Max(40px, 2.5rem);
+  border-radius: 6px;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 130%;
+  color: #1c2024;
+  margin-top: 1rem;
 }

@@ -70,7 +70,7 @@
 }
 .storefront__card button {
   width: 100%;
-  background-color: #3e63dd;
+  background-color: #23375f0d;
   width: 100%;
   height: Max(40px, 2.5rem);
   border-radius: 6px;
@@ -82,6 +82,6 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 130%;
-  color: #ffffff;
+  color: #1c2024;
   margin-top: 1rem;
 }
