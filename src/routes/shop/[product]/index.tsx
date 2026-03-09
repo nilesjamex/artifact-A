@@ -1,12 +1,38 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal, useTask$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import { useNavigate } from "@builder.io/qwik-city";
+import { useNavigate, useLocation, routeLoader$ } from "@builder.io/qwik-city";
 import { LuArrowLeft, LuMinus, LuPlus } from "@qwikest/icons/lucide";
 import "./product.css";
-import Product from "~/assets/product-big.png?quality=80&format=webp&jsx";
+// import Product from "~/assets/product-big.png?quality=80&format=webp&jsx";
+
+export const useGetProduct = routeLoader$(async (location) => {
+  const res = await fetch(
+    `https://dummyjson.com/products/category/${location}`,
+    {
+      headers: { Accept: "application/json" },
+    },
+  );
+  return (await res.json()) as any;
+});
 
 export default component$(() => {
   const navigate = useNavigate();
+  const loc = useLocation();
+  const product = useSignal<any>(null);
+
+  console.log(loc.params);
+  console.log(loc.params.product);
+  useTask$(async ({ track }) => {
+    track(() => loc.params.product);
+    const res = await fetch(
+      `https://dummyjson.com/products/${loc.params.product}`,
+      {
+        headers: { Accept: "application/json" },
+      },
+    );
+    product.value = await res.json();
+  });
+  console.log(product);
   return (
     <div class="product__page">
       <h1 class="product__back" role="button" onClick$={() => navigate(-1)}>
@@ -15,19 +41,19 @@ export default component$(() => {
       </h1>
       <div class="product__details">
         <div class="product__media">
-          <Product class="product__image" alt="product image" />
+          <img
+            src={product.value.images[0]}
+            class="product__image"
+            alt="product image"
+            width={280}
+            height={280}
+          />
         </div>
         <div class="product__content">
           <div class="product__content__head">
-            <h2>Notebook</h2>
+            <h2>{product.value.title}</h2>
             <h3>About</h3>
-            <p>
-              Capture your thoughts in style with our premium notebook.
-              Featuring 192 pages of high-quality, acid-free 80 gsm paper, this
-              A5-sized notebook is perfect for journaling, sketching, or
-              note-taking. The hardcover design, bound in durable linen,
-              protects your ideas and lies flat when open.{" "}
-            </p>
+            <p>{product.value.description}. </p>
           </div>
           <div class="product__content__cart">
             <div class="product__cart">
@@ -44,7 +70,7 @@ export default component$(() => {
                 </div>
               </div>
               <div class="product__price">
-                <h4>9.99 USDC</h4>
+                <h4>{product.value.price} USDC</h4>
               </div>
             </div>
             <button class="product__cart__button">Add to cart</button>

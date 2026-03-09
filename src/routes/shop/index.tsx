@@ -1,4 +1,4 @@
-import { component$, useSignal, useComputed$ } from "@builder.io/qwik";
+import { component$, useSignal, useTask$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
 import {
@@ -6,7 +6,6 @@ import {
   LuCheck,
   LuShoppingBasket,
 } from "@qwikest/icons/lucide";
-// import Product from "../../assets/product.png?quality=100&jsx";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import "./shop.css";
 
@@ -85,103 +84,40 @@ export default component$(() => {
   const selectedCategory = useSignal(1);
   const showFilter = useSignal(false);
   const selectedFilter = useSignal(0);
-  // const products = useSignal([])
+  const products = useSignal<any>(allProducts.value);
 
-  const products = useComputed$(async () => {
-    const filterId = selectedFilter.value;
-    const categoryId = selectedCategory.value;
+  useTask$(async ({ track }) => {
+    const filterId = track(() => selectedFilter.value);
+    const categoryId = track(() => selectedCategory.value);
 
     const filter = filters.find((f) => f.id === filterId);
     const category = categories.find((c) => c.id === categoryId);
 
-    if (!filter || !category) return allProducts.value;
-    if (categoryId === 1) return allProducts.value;
+    const sortParams = filter
+      ? `?sortBy=${filter.sortBy}&order=${filter.order}`
+      : "";
 
+    // All categories
+    if (categoryId === 1) {
+      if (!filter) {
+        products.value = allProducts.value;
+        return;
+      }
+      const res = await fetch(
+        `https://dummyjson.com/products?limit=60&sortBy=${filter.sortBy}&order=${filter.order}`,
+        { headers: { Accept: "application/json" } },
+      );
+      products.value = await res.json();
+      return;
+    }
+
+    // Specific category with optional sort
     const res = await fetch(
-      `https://dummyjson.com/products${category.code}?sortBy=${filter?.sortBy}&order=${filter?.order}`,
-      {
-        headers: { Accept: "application/json" },
-      },
+      `https://dummyjson.com/products${category!.code}${sortParams}`,
+      { headers: { Accept: "application/json" } },
     );
-
-    return (await res.json()) as any;
+    products.value = await res.json();
   });
-
-  // products.value = useComputed$(async () => {
-  //   const categoryId = selectedCategory.value;
-  //   if (categoryId === 1) {
-  //     return allProducts.value;
-  //   }
-  //   const category = categories.find((c) => c.id === categoryId);
-
-  //   if (!category) return allProducts.value;
-
-  //   const res = await fetch(
-  //     `https://dummyjson.com/products/category/${category.code}`,
-  //     {
-  //       headers: { Accept: "application/json" },
-  //     },
-  //   );
-  //   return (await res.json()) as any;
-  // });
-
-  // const products = [
-  //   {
-  //     id: 1,
-  //     name: "Postman T-Shirt",
-  //     price: 15.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Postman Mug",
-  //     price: 9.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Postman Sticker Pack",
-  //     price: 4.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 1,
-  //     name: "Postman T-Shirt",
-  //     price: 15.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Postman Mug",
-  //     price: 9.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Postman Sticker Pack",
-  //     price: 4.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 1,
-  //     name: "Postman T-Shirt",
-  //     price: 15.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Postman Mug",
-  //     price: 9.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Postman Sticker Pack",
-  //     price: 4.99,
-  //     image: Product,
-  //   },
-  // ];
-
   return (
     <>
       <div class="shop__header">
@@ -243,7 +179,7 @@ export default component$(() => {
             <div class="shop__card">
               <div class="image__container">
                 <img
-                  src={product.images[0]}
+                  src={product.thumbnail}
                   class="product__image"
                   alt="product image"
                   width={280}
