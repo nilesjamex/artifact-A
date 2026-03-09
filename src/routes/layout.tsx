@@ -1,10 +1,28 @@
-import { component$, Slot, useSignal } from "@builder.io/qwik";
+import {
+  component$,
+  Slot,
+  useSignal,
+  useContextProvider,
+  useStore,
+} from "@builder.io/qwik";
 import { Footer } from "~/components/Footer/Footer";
 import { Nav } from "~/components/Nav/Nav";
 import { Cart } from "~/components/Cart";
+import { CartContext, CartState } from "~/context/cart.context";
+import { routeLoader$ } from "@builder.io/qwik-city";
+
+export const useGetCart = routeLoader$(async () => {
+  const res = fetch(`https://dummyjson.com/carts/10`, {
+    headers: { Accept: "application/json" },
+  });
+  return (await res).json() as any;
+});
 
 export default component$(() => {
+  const cart = useStore<CartState>({ items: useGetCart() });
+  useContextProvider(CartContext, cart);
   const openCart = useSignal(false);
+  console.log(cart.items.id);
   // const toggleCart$ = () => {
   //   openCart.value = !openCart.value;
   // };
