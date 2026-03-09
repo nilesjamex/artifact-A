@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { Link } from "@builder.io/qwik-city";
 import "./completed.css";
 import { LuCheck } from "@qwikest/icons/lucide";
 
@@ -14,7 +15,9 @@ export default component$(() => {
           We have sent the order confirmation details to{" "}
           <span>customer.email@gmail.com</span>
         </h2>
-        <button>Back to home</button>
+        <Link href="/">
+          <button>Back to home</button>
+        </Link>
       </div>
     </div>
   );

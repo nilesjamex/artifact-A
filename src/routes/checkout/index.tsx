@@ -6,7 +6,7 @@ import { LuChevronRight } from "@qwikest/icons/lucide";
 import "./checkout.css";
 
 export default component$(() => {
-  const breadcrumb = useSignal(2);
+  const breadcrumb = useSignal(1);
   return (
     <div class="checkout">
       <div class="ccart__breadcrumb">
@@ -30,7 +30,7 @@ export default component$(() => {
           Address
         </h5>
       </div>
-      {breadcrumb.value === 1 && <CheckOutCart />}
+      {breadcrumb.value === 1 && <CheckOutCart step={breadcrumb} />}
       {breadcrumb.value === 2 && <CheckoutAddress />}
     </div>
   );

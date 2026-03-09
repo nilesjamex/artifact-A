@@ -1,42 +1,14 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useContext } from "@builder.io/qwik";
 import "./address.css";
-import Media from "../../assets/cart.png?quality=80&jsx";
+import { CartContext } from "~/context/cart.context";
+import { Link } from "@builder.io/qwik-city";
 
 // export interface AddressProp {
 //   step: Signal<number>;
 // }
 
 export const CheckoutAddress = component$(() => {
-  const cartItems = [
-    {
-      id: 1,
-      name: "Notebook",
-      price: 12.99,
-      quantity: 2,
-      imageUrl: Media,
-    },
-    {
-      id: 1,
-      name: "Notebook",
-      price: 12.99,
-      quantity: 2,
-      imageUrl: Media,
-    },
-    {
-      id: 1,
-      name: "Notebook",
-      price: 12.99,
-      quantity: 2,
-      imageUrl: Media,
-    },
-    {
-      id: 1,
-      name: "Notebook",
-      price: 12.99,
-      quantity: 2,
-      imageUrl: Media,
-    },
-  ];
+  const cart = useContext(CartContext);
   return (
     <div class="address">
       <div class="address__content">
@@ -101,18 +73,25 @@ export const CheckoutAddress = component$(() => {
         </div>
         <div class="address__order">
           <h4>
-            Order Summary <span>&#40;{cartItems.length} items&#41;</span>
+            Order Summary{" "}
+            <span>&#40;{cart.items.value.totalProducts} items&#41;</span>
           </h4>
           <div class="address__summary">
-            {cartItems.map((item) => (
+            {cart.items.value.products.map((item: any) => (
               <div class="ccart__item" key={item.id}>
                 <div class="ccart__img">
-                  <item.imageUrl />
+                  <img
+                    src={item.thumbnail}
+                    class="product__image"
+                    alt="product image"
+                    width={80}
+                    height={80}
+                  />
                 </div>
 
                 <div class="ccart__item__content">
                   <div class="ccart__item__name">
-                    <h4>{item.name}</h4>
+                    <h4>{item.title}</h4>
                   </div>
                   <div class="ccart__item__price">
                     <h5>1 X {item.price} USDC</h5>
@@ -134,7 +113,9 @@ export const CheckoutAddress = component$(() => {
                 <h6>112.96 USDC</h6>
               </div>
             </div>
-            <button>Place Order</button>
+            <Link href="/order/completed">
+              <button class="order">Place Order</button>
+            </Link>
           </div>
         </div>
       </div>
