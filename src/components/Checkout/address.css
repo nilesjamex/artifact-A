@@ -87,3 +87,17 @@
 .address__summary {
   width: Min(420px, 100%);
 }
+.order {
+  background-color: #3e63dd;
+  width: 100%;
+  height: Max(40px, 2.5rem);
+  border-radius: 6px;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 130%;
+  color: #ffffff;
+}
