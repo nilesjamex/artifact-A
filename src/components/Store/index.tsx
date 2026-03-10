@@ -1,6 +1,7 @@
 import { component$, type Signal } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { useNavigate } from "@builder.io/qwik-city";
 import { LuShoppingBasket } from "@qwikest/icons/lucide";
+import { useCartHook } from "~/hooks/cart";
 // import type { DocumentHead } from "@builder.io/qwik-city";
 import "./store.css";
 // import Product from "../../assets/product.png?quality=100&jsx";
@@ -66,7 +67,9 @@ export const Store = component$<ProductProps>(({ product }) => {
   //     image: Product,
   //   },
   // ];
+  const nav = useNavigate();
   const products = product.value.products;
+  const { addToCart } = useCartHook();
   return (
     <div class="storefront">
       <div class="storefront__header">
@@ -77,26 +80,33 @@ export const Store = component$<ProductProps>(({ product }) => {
         <h3>All Products</h3>
         <div class="storefront__cards">
           {products.map((item: any) => (
-            <Link href={`/shop/${item.id}`} key={item.id}>
-              <div class="storefront__card">
-                <div class="image__container">
-                  <img
-                    src={item.images[0]}
-                    class="product__image"
-                    alt="product image"
-                    width={280}
-                    height={280}
-                  />
-                </div>
-                <div class="storefront__card__text">
-                  <h4 class="product__title">{item.title}</h4>
-                  <h5 class="product__price">{item.price} USDC</h5>
-                </div>
-                <button>
-                  Add to cart <LuShoppingBasket />
-                </button>
+            <div class="storefront__card" key={item.id}>
+              <div
+                class="image__container"
+                onClick$={() => {
+                  nav(`/shop/${item.id}`);
+                }}
+              >
+                <img
+                  src={item.images[0]}
+                  class="product__image"
+                  alt="product image"
+                  width={280}
+                  height={280}
+                />
               </div>
-            </Link>
+              <div class="storefront__card__text">
+                <h4 class="product__title">{item.title}</h4>
+                <h5 class="product__price">{item.price} USDC</h5>
+              </div>
+              <button
+                onClick$={() => {
+                  addToCart(item.id, 1);
+                }}
+              >
+                Add to cart <LuShoppingBasket />
+              </button>
+            </div>
           ))}
         </div>
       </div>
