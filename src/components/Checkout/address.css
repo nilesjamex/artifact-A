@@ -101,3 +101,26 @@
   line-height: 130%;
   color: #ffffff;
 }
+
+@media screen and (max-width: 990px) {
+  .address {
+    margin: unset;
+    padding-left: unset;
+  }
+  .address__content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .address__info {
+    width: 100%;
+  }
+  .address__summary {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 765px) {
+  .address__info__cont {
+    flex-direction: column;
+  }
+}

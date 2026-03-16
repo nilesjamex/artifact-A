@@ -192,3 +192,32 @@
   line-height: 130%;
   color: #ffffff;
 }
+
+@media screen and (max-width: 990px) {
+  .ccart {
+    margin: unset;
+    padding-left: unset;
+  }
+  .ccart__content {
+    flex-direction: column;
+  }
+  .ccart__items {
+    width: 100%;
+  }
+  .ccart__price {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .ccart__item {
+    height: auto;
+  }
+  .ccart__item__price {
+    flex-direction: column;
+    margin-top: 0.5rem;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}
