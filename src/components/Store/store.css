@@ -85,3 +85,37 @@
   color: #1c2024;
   margin-top: 1rem;
 }
+
+/* media responsiveness */
+@media screen and (max-width: 1040px) {
+  .storefront__cards {
+    gap: 1.5rem;
+  }
+  .storefront__card {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .storefront__title {
+    font-size: Max(1.75rem, 24px);
+  }
+  .storefront__description {
+    font-size: Max(1.25rem, 16px);
+  }
+  .storefront__cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  .storefront__title {
+    font-size: Max(1.25rem, 20px);
+  }
+  .storefront__description {
+    font-size: Max(1rem, 16px);
+  }
+}

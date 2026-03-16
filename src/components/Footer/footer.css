@@ -2,6 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   border-top: 1px solid #e8e8ec;
   padding: 1.5rem 2.75rem;
   height: Max(110px, 6.875rem);
