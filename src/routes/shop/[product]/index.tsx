@@ -20,8 +20,6 @@ export default component$(() => {
   const loc = useLocation();
   const product = useSignal<any>(null);
 
-  console.log(loc.params);
-  console.log(loc.params.product);
   useTask$(async ({ track }) => {
     track(() => loc.params.product);
     const res = await fetch(
@@ -32,7 +30,6 @@ export default component$(() => {
     );
     product.value = await res.json();
   });
-  console.log(product);
   return (
     <div class="product__page">
       <h1 class="product__back" role="button" onClick$={() => navigate(-1)}>

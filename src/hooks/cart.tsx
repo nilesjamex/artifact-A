@@ -13,8 +13,6 @@ export const useCartHook = () => {
     cartStore.items.value = res.json();
   });
   const addToCart = $(async (id: number, quantity: number) => {
-    console.log(id);
-    console.log(quantity);
     const res = await fetch(`https://dummyjson.com/carts/10`, {
       method: `PUT`,
       headers: {
@@ -32,7 +30,6 @@ export const useCartHook = () => {
       }),
     });
     const data = await res.json();
-    console.log(data);
     cartStore.items.value = data.products;
     await getCart();
   });

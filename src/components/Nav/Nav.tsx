@@ -10,7 +10,6 @@ export interface NavProps {
 
 export const Nav = component$<NavProps>(({ openCart }) => {
   const cart = useContext(CartContext);
-  console.log(cart.items.value);
   return (
     <div class="navbar">
       <Link href="/">

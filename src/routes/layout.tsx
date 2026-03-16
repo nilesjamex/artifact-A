@@ -22,10 +22,7 @@ export default component$(() => {
   const cart = useStore<CartState>({ items: useGetCart() });
   useContextProvider(CartContext, cart);
   const openCart = useSignal(false);
-  console.log(cart.items.id);
-  // const toggleCart$ = () => {
-  //   openCart.value = !openCart.value;
-  // };
+
   return (
     <>
       {/* {openCart.value && <Cart openCart={openCart} />} */}
