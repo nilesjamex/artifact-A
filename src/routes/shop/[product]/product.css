@@ -134,3 +134,30 @@
   color: #3e63dd;
   transition: all 0.2s ease-in-out;
 }
+
+@media screen and (max-width: 950px) {
+  .product__details {
+    flex-direction: column;
+  }
+  .product__media {
+    height: auto;
+    aspect-ratio: unset;
+  }
+  .product__content {
+    height: auto;
+    gap: 3rem;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .product__content__head h2 {
+    font-size: Max(1.25rem, 16px);
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .product__cart {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}

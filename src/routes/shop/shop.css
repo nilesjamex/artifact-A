@@ -147,3 +147,37 @@
   color: #1c2024;
   margin-top: 1rem;
 }
+
+/* media responsiveness */
+@media screen and (max-width: 1040px) {
+  .shop__cards {
+    gap: 1.5rem;
+  }
+  .shop__card {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .shop__header {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+  .shop__category {
+    flex-wrap: wrap;
+  }
+  .shop__filter {
+    width: 100%;
+  }
+  .shop__filter button {
+    justify-self: flex-end;
+  }
+  .shop__cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+}

@@ -39,7 +39,7 @@ export default component$(() => {
       <div class="product__details">
         <div class="product__media">
           <img
-            src={product.value.images[0]}
+            src={product?.value?.images[0]}
             class="product__image"
             alt="product image"
             width={280}
@@ -48,9 +48,9 @@ export default component$(() => {
         </div>
         <div class="product__content">
           <div class="product__content__head">
-            <h2>{product.value.title}</h2>
+            <h2>{product?.value?.title}</h2>
             <h3>About</h3>
-            <p>{product.value.description}. </p>
+            <p>{product?.value?.description}. </p>
           </div>
           <div class="product__content__cart">
             <div class="product__cart">
@@ -67,7 +67,7 @@ export default component$(() => {
                 </div>
               </div>
               <div class="product__price">
-                <h4>{product.value.price} USDC</h4>
+                <h4>{product?.value?.price} USDC</h4>
               </div>
             </div>
             <button class="product__cart__button">Add to cart</button>
