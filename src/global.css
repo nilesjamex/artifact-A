@@ -24,3 +24,9 @@ a {
   min-height: calc(100vh - Max(110px, 6.875rem) - Max(48px, 3rem));
   padding: 2.75rem 2.75rem;
 }
+
+@media screen and (max-width: 650px) {
+  .layout__container {
+    padding: 2.75rem 5%;
+  }
+}
