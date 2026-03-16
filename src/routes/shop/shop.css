@@ -31,6 +31,7 @@
 }
 .shop__filter {
   position: relative;
+  z-index: 1;
 }
 .shop__filter button {
   display: flex;
@@ -46,6 +47,7 @@
 }
 .shop__filter__dropdown {
   position: absolute;
+  z-index: 1;
   top: 110%;
   right: 0%;
   width: Max(10.625rem, 170px);
