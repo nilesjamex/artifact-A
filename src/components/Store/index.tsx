@@ -1,4 +1,4 @@
-import { component$, type Signal } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { useNavigate } from "@builder.io/qwik-city";
 import { LuShoppingBasket } from "@qwikest/icons/lucide";
 import { useCartHook } from "~/hooks/cart";
@@ -7,68 +7,12 @@ import "./store.css";
 // import Product from "../../assets/product.png?quality=100&jsx";
 
 export interface ProductProps {
-  product: Signal<any>;
+  product: any;
 }
 
 export const Store = component$<ProductProps>(({ product }) => {
-  // const products = [
-  //   {
-  //     id: 1,
-  //     name: "Postman T-Shirt",
-  //     price: 15.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Postman Mug",
-  //     price: 9.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Postman Sticker Pack",
-  //     price: 4.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 1,
-  //     name: "Postman T-Shirt",
-  //     price: 15.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Postman Mug",
-  //     price: 9.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Postman Sticker Pack",
-  //     price: 4.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 1,
-  //     name: "Postman T-Shirt",
-  //     price: 15.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Postman Mug",
-  //     price: 9.99,
-  //     image: Product,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Postman Sticker Pack",
-  //     price: 4.99,
-  //     image: Product,
-  //   },
-  // ];
   const nav = useNavigate();
-  const products = product.value.products;
+  const products = product.items?.products ?? [];
   const { addToCart } = useCartHook();
   return (
     <div class="storefront">
