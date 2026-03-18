@@ -1,5 +1,5 @@
-import { $, useSignal, component$, type Signal } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { $, component$, type Signal } from "@builder.io/qwik";
+import { Link, useLocation } from "@builder.io/qwik-city";
 import { useContext } from "@builder.io/qwik";
 import { CartContext } from "~/context/cart.context";
 import "./Nav.css";
@@ -10,23 +10,12 @@ export interface NavProps {
 }
 
 export const Nav = component$<NavProps>(({ openCart, searchInput }) => {
-  const products = useSignal();
-  const textInput = $(() => {
-    // console.log("text update");
-  });
+  const textInput = $(() => {});
   const searchResult = $(async (value: string) => {
-    // const res = await fetch(
-    //   `https://dummyjson.com/products/search?q=${value}&limit=600`,
-    //   {
-    //     headers: { Accept: "application/json" },
-    //   },
-    // );
-    // products.value = await res.json();
-    // console.log(products.value);
-    // return;
     searchInput.value = value;
   });
   const cart = useContext(CartContext);
+  const loc = useLocation()
   return (
     <div class="navbar">
       <Link href="/">
@@ -34,7 +23,7 @@ export const Nav = component$<NavProps>(({ openCart, searchInput }) => {
           StoreFront
         </h1>
       </Link>
-      <input
+      {loc.url.pathname === `/` && <input
         type="text"
         class="search"
         placeholder="search products..."
@@ -42,7 +31,7 @@ export const Nav = component$<NavProps>(({ openCart, searchInput }) => {
           textInput();
           searchResult(target.value);
         }}
-      />
+      />}
       <div class="navbar__links">
         <Link href="/shop">
           <button type="button">shop</button>

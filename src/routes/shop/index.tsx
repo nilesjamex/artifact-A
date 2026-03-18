@@ -1,4 +1,4 @@
-import { component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useTask$, useStore } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
 import {
@@ -7,10 +7,11 @@ import {
   LuShoppingBasket,
 } from "@qwikest/icons/lucide";
 import { routeLoader$ } from "@builder.io/qwik-city";
+import { ProductState } from "~/context/product.context";
 import "./shop.css";
 
 export const useGetProducts = routeLoader$(async () => {
-  const res = await fetch("https://dummyjson.com/products?limit=60", {
+  const res = await fetch("https://dummyjson.com/products?limit=600", {
     headers: { Accept: "application/json" },
   });
   return (await res.json()) as any;
@@ -81,10 +82,20 @@ export default component$(() => {
     },
   ];
   const allProducts = useGetProducts();
+  const productList = useStore<ProductState>({
+    items: { products: [] },
+  });
+
+  useTask$(({ track }) => {
+    track(() => allProducts.value);
+    if (allProducts.value) {
+      productList.items = allProducts.value;
+    }
+  });
   const selectedCategory = useSignal(1);
   const showFilter = useSignal(false);
   const selectedFilter = useSignal(0);
-  const products = useSignal<any>(allProducts.value);
+  const products = productList.items;
 
   useTask$(async ({ track }) => {
     const filterId = track(() => selectedFilter.value);
@@ -100,14 +111,16 @@ export default component$(() => {
     // All categories
     if (categoryId === 1) {
       if (!filter) {
-        products.value = allProducts.value;
+        products.value = productList.items;
         return;
       }
       const res = await fetch(
         `https://dummyjson.com/products?limit=60&sortBy=${filter.sortBy}&order=${filter.order}`,
         { headers: { Accept: "application/json" } },
       );
-      products.value = await res.json();
+      const data = await res.json();
+      productList.items = data;
+      products.value = productList.items;
       return;
     }
 
@@ -116,7 +129,9 @@ export default component$(() => {
       `https://dummyjson.com/products${category!.code}${sortParams}`,
       { headers: { Accept: "application/json" } },
     );
-    products.value = await res.json();
+    const data = await res.json();
+    productList.items = data;
+    products.value = productList.items;
   });
   return (
     <>

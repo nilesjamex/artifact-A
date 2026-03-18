@@ -13,7 +13,6 @@ export const useGetProducts = routeLoader$(async () => {
 
 export default component$(() => {
   const product = useContext(ProductContext);
-  // const products = useGetProducts();
   return (
     <>
       <Store product={product} />
