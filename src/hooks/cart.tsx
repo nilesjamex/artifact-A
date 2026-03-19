@@ -1,38 +1,127 @@
-import { $, useStore } from "@builder.io/qwik";
-// import { CartContext } from "~/context/cart.context";
-import { CartState } from "~/context/cart.context";
+import { $, useStore, useContext } from "@builder.io/qwik";
+import { CartState, CartProduct, CartContext } from "~/context/cart.context";
 
 export const useCartHook = () => {
-  //   const cart = useContext(CartContext);
-  const cartStore = useStore<CartState>({ items: [] });
+  const cartStore = useStore<CartState>({
+    items: {
+      value: {
+        products: [],
+        total: 0,
+        discountedTotal: 0,
+        totalProducts: 0,
+        totalQuantity: 0,
+      },
+    },
+  });
+  const cart = useContext(CartContext);
 
   const getCart = $(async () => {
     const res = await fetch(`https://dummyjson.com/carts/10`, {
       headers: { Accept: "application/json" },
     });
-    cartStore.items.value = res.json();
-  });
-  const addToCart = $(async (id: number, quantity: number) => {
-    const res = await fetch(`https://dummyjson.com/carts/10`, {
-      method: `PUT`,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        merge: true,
-        products: [
-          {
-            id: id,
-            quantity: quantity,
-          },
-        ],
-      }),
-    });
     const data = await res.json();
-    cartStore.items.value = data.products;
-    await getCart();
+    cartStore.items.value = data;
   });
 
-  return { addToCart, cartStore };
+  const addProductToCart = $(
+    async (id: number, quantity: number, item: any) => {
+      await fetch(`https://dummyjson.com/carts/10`, {
+        method: `PUT`,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          merge: true,
+          products: [{ id, quantity }],
+        }),
+      });
+      const current = cart.items.value;
+      console.log(current.products);
+      const existing = current.products.find(
+        (p: CartProduct) => p.id === item.id,
+      );
+      let updated: CartProduct[];
+      if (existing) {
+        updated = current.products.map((p: CartProduct) =>
+          p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p,
+        );
+      } else {
+        updated = [
+          ...current.products,
+          {
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            quantity: 1,
+            thumbnail: item.images[0],
+          },
+        ];
+      }
+      const newTotal = updated.reduce(
+        (sum: number, p: CartProduct) => sum + p.price * p.quantity,
+        0,
+      );
+      cart.items.value = {
+        ...current,
+        products: updated,
+        totalProducts: updated.length,
+        totalQuantity: updated.reduce(
+          (sum: number, p: CartProduct) => sum + p.quantity,
+          0,
+        ),
+        total: parseFloat(newTotal.toFixed(2)),
+      };
+    },
+  );
+
+  const removeFromCart = $((id: number) => {
+    const current = cartStore.items.value;
+    const updated = current.products.filter((p: CartProduct) => p.id !== id);
+    const newTotal = updated.reduce(
+      (sum: number, p: CartProduct) => sum + p.price * p.quantity,
+      0,
+    );
+    cartStore.items.value = {
+      ...current,
+      products: updated,
+      totalProducts: updated.length,
+      totalQuantity: updated.reduce(
+        (sum: number, p: CartProduct) => sum + p.quantity,
+        0,
+      ),
+      total: parseFloat(newTotal.toFixed(2)),
+    };
+  });
+
+  const updateQuantity = $((id: number, delta: number) => {
+    const current = cartStore.items.value;
+    const updated = current.products
+      .map((p: CartProduct) =>
+        p.id === id ? { ...p, quantity: p.quantity + delta } : p,
+      )
+      .filter((p: CartProduct) => p.quantity > 0);
+    const newTotal = updated.reduce(
+      (sum: number, p: CartProduct) => sum + p.price * p.quantity,
+      0,
+    );
+    cartStore.items.value = {
+      ...current,
+      products: updated,
+      totalProducts: updated.length,
+      totalQuantity: updated.reduce(
+        (sum: number, p: CartProduct) => sum + p.quantity,
+        0,
+      ),
+      total: parseFloat(newTotal.toFixed(2)),
+    };
+  });
+
+  return {
+    addProductToCart,
+    removeFromCart,
+    updateQuantity,
+    getCart,
+    cartStore,
+  };
 };
