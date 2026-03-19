@@ -79,7 +79,7 @@ export const CheckOutCart = component$<StageProp>(({ step }) => {
             </div>
             <div>
               <h5>Taxes (10%)</h5>
-              <h6>{cart.items.value.discountedTotal} USDC</h6>
+              <h6>{(cart.items.value.total * 0.1).toFixed(2)} USDC</h6>
             </div>
             <div>
               <h5>Total</h5>
