@@ -37,7 +37,6 @@ export const useCartHook = () => {
         }),
       });
       const current = cart.items.value;
-      console.log(current.products);
       const existing = current.products.find(
         (p: CartProduct) => p.id === item.id,
       );
@@ -75,52 +74,82 @@ export const useCartHook = () => {
     },
   );
 
-  const removeFromCart = $((id: number) => {
-    const current = cartStore.items.value;
-    const updated = current.products.filter((p: CartProduct) => p.id !== id);
+  const removeFromCart = $((item: any) => {
+    const current = cart.items.value;
+    const updated = current.products.filter((p: any) => p.id !== item.id);
     const newTotal = updated.reduce(
-      (sum: number, p: CartProduct) => sum + p.price * p.quantity,
+      (sum: number, p: any) => sum + p.price * p.quantity,
       0,
     );
-    cartStore.items.value = {
+    cart.items.value = {
       ...current,
       products: updated,
       totalProducts: updated.length,
       totalQuantity: updated.reduce(
-        (sum: number, p: CartProduct) => sum + p.quantity,
+        (sum: number, p: any) => sum + p.quantity,
         0,
       ),
       total: parseFloat(newTotal.toFixed(2)),
     };
   });
 
-  const updateQuantity = $((id: number, delta: number) => {
-    const current = cartStore.items.value;
-    const updated = current.products
-      .map((p: CartProduct) =>
-        p.id === id ? { ...p, quantity: p.quantity + delta } : p,
-      )
-      .filter((p: CartProduct) => p.quantity > 0);
-    const newTotal = updated.reduce(
-      (sum: number, p: CartProduct) => sum + p.price * p.quantity,
-      0,
+  const updateQuantity = $((item: any) => {
+    const cartData = cart.items.value;
+
+    // Find the specific item proxy
+    const targetProduct = cartData.products.find(
+      (p: CartProduct) => p.id === item.id,
     );
-    cartStore.items.value = {
-      ...current,
-      products: updated,
-      totalProducts: updated.length,
-      totalQuantity: updated.reduce(
-        (sum: number, p: CartProduct) => sum + p.quantity,
+
+    if (targetProduct) {
+      // 1. Mutate the property directly!
+      targetProduct.quantity += 1;
+      cartData.totalQuantity += 1;
+
+      // 2. Recalculate totals
+      const newTotal = cartData.products.reduce(
+        (sum: number, p: CartProduct) => sum + p.price * p.quantity,
         0,
-      ),
-      total: parseFloat(newTotal.toFixed(2)),
-    };
+      );
+      cartData.total = parseFloat(newTotal.toFixed(2));
+    }
+  });
+
+  const reduceQuantity = $((item: any) => {
+    const cartData = cart.items.value;
+
+    // Find the index so we can safely remove it if quantity hits 0
+    const targetIndex = cartData.products.findIndex(
+      (p: CartProduct) => p.id === item.id,
+    );
+
+    if (targetIndex !== -1) {
+      const targetProduct = cartData.products[targetIndex];
+
+      // Mutate directly
+      targetProduct.quantity -= 1;
+      cartData.totalQuantity -= 1;
+
+      // If the user reduces quantity to 0, completely remove the item
+      if (targetProduct.quantity <= 0) {
+        cartData.products.splice(targetIndex, 1);
+        cartData.totalProducts = cartData.products.length;
+      }
+
+      // Recalculate totals
+      const newTotal = cartData.products.reduce(
+        (sum: number, p: CartProduct) => sum + p.price * p.quantity,
+        0,
+      );
+      cartData.total = parseFloat(newTotal.toFixed(2));
+    }
   });
 
   return {
     addProductToCart,
     removeFromCart,
     updateQuantity,
+    reduceQuantity,
     getCart,
     cartStore,
   };
