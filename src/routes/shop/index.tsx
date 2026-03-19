@@ -1,4 +1,4 @@
-import { component$, useSignal, useTask$, useStore } from "@builder.io/qwik";
+import { $, component$, useSignal, useTask$, useStore } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
 import {
@@ -8,6 +8,7 @@ import {
 } from "@qwikest/icons/lucide";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { ProductState } from "~/context/product.context";
+import { useCartHook } from "~/hooks/cart";
 import "./shop.css";
 
 export const useGetProducts = routeLoader$(async () => {
@@ -17,73 +18,27 @@ export const useGetProducts = routeLoader$(async () => {
   return (await res.json()) as any;
 });
 
-export const useGetProductsByCategory = routeLoader$(async (category) => {
-  const res = await fetch(
-    `https://dummyjson.com/products/category/${category}`,
-    {
-      headers: { Accept: "application/json" },
-    },
-  );
-  return (await res.json()) as any;
-});
-
 export default component$(() => {
   const categories = [
-    {
-      id: 1,
-      name: "All",
-      code: "/category",
-    },
-    {
-      id: 2,
-      name: "Beauty",
-      code: "/category/beauty",
-    },
-    {
-      id: 3,
-      name: "Furnitures",
-      code: "/category/furniture",
-    },
-    {
-      id: 4,
-      name: "Fragrances",
-      code: "/category/fragrances",
-    },
-    {
-      id: 5,
-      name: "Groceries",
-      code: "/category/groceries",
-    },
+    { id: 1, name: "All", code: "/category" },
+    { id: 2, name: "Beauty", code: "/category/beauty" },
+    { id: 3, name: "Furnitures", code: "/category/furniture" },
+    { id: 4, name: "Fragrances", code: "/category/fragrances" },
+    { id: 5, name: "Groceries", code: "/category/groceries" },
   ];
   const filters = [
-    {
-      id: 1,
-      name: "Newest",
-      sortBy: "id",
-      order: "desc",
-    },
-    {
-      id: 2,
-      name: "Oldest",
-      sortBy: "id",
-      order: "asc",
-    },
-    {
-      id: 3,
-      name: "Lowest Price",
-      sortBy: "price",
-      order: "asc",
-    },
-    {
-      id: 4,
-      name: "Highest Price",
-      sortBy: "price",
-      order: "desc",
-    },
+    { id: 1, name: "Newest", sortBy: "id", order: "desc" },
+    { id: 2, name: "Oldest", sortBy: "id", order: "asc" },
+    { id: 3, name: "Lowest Price", sortBy: "price", order: "asc" },
+    { id: 4, name: "Highest Price", sortBy: "price", order: "desc" },
   ];
+
   const allProducts = useGetProducts();
-  const productList = useStore<ProductState>({
-    items: { products: [] },
+  const productList = useStore<ProductState>({ items: { products: [] } });
+
+  const { addProductToCart } = useCartHook();
+  const addToCart = $((item: any) => {
+    addProductToCart(item.id, 1, item);
   });
 
   useTask$(({ track }) => {
@@ -92,6 +47,7 @@ export default component$(() => {
       productList.items = allProducts.value;
     }
   });
+
   const selectedCategory = useSignal(1);
   const showFilter = useSignal(false);
   const selectedFilter = useSignal(0);
@@ -103,12 +59,10 @@ export default component$(() => {
 
     const filter = filters.find((f) => f.id === filterId);
     const category = categories.find((c) => c.id === categoryId);
-
     const sortParams = filter
       ? `?sortBy=${filter.sortBy}&order=${filter.order}`
       : "";
 
-    // All categories
     if (categoryId === 1) {
       if (!filter) {
         products.value = productList.items;
@@ -124,7 +78,6 @@ export default component$(() => {
       return;
     }
 
-    // Specific category with optional sort
     const res = await fetch(
       `https://dummyjson.com/products${category!.code}${sortParams}`,
       { headers: { Accept: "application/json" } },
@@ -133,6 +86,7 @@ export default component$(() => {
     productList.items = data;
     products.value = productList.items;
   });
+
   return (
     <>
       <div class="shop__header">
@@ -186,12 +140,8 @@ export default component$(() => {
       </div>
       <div class="shop__cards">
         {products.value?.products?.map((product: any) => (
-          <Link
-            href={`/shop/${product.id}`}
-            class="shop__card"
-            key={product.id}
-          >
-            <div class="shop__card">
+          <div class="shop__card" key={product.id}>
+            <Link href={`/shop/${product.id}`} class="shop__card__link">
               <div class="image__container">
                 <img
                   src={product.thumbnail}
@@ -205,11 +155,16 @@ export default component$(() => {
                 <h4 class="product__title">{product.title}</h4>
                 <h5 class="product__price">{product.price} USDC</h5>
               </div>
-              <button>
-                Add to cart <LuShoppingBasket />
-              </button>
-            </div>
-          </Link>
+            </Link>
+            <button
+              onClick$={(e) => {
+                e.stopPropagation();
+                addToCart(product);
+              }}
+            >
+              Add to cart <LuShoppingBasket />
+            </button>
+          </div>
         ))}
       </div>
     </>

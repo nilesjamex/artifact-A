@@ -1,9 +1,9 @@
-import { component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { $, component$, useSignal, useTask$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { useNavigate, useLocation, routeLoader$ } from "@builder.io/qwik-city";
 import { LuArrowLeft, LuMinus, LuPlus } from "@qwikest/icons/lucide";
+import { useCartHook } from "~/hooks/cart";
 import "./product.css";
-// import Product from "~/assets/product-big.png?quality=80&format=webp&jsx";
 
 export const useGetProduct = routeLoader$(async (location) => {
   const res = await fetch(
@@ -19,6 +19,13 @@ export default component$(() => {
   const navigate = useNavigate();
   const loc = useLocation();
   const product = useSignal<any>(null);
+  const quantity = useSignal(1);
+
+  const { addProductToCart } = useCartHook();
+
+  const addToCart = $((item: any) => {
+    addProductToCart(item.id, quantity.value, item);
+  });
 
   useTask$(async ({ track }) => {
     track(() => loc.params.product);
@@ -29,7 +36,9 @@ export default component$(() => {
       },
     );
     product.value = await res.json();
+    quantity.value = 1;
   });
+
   return (
     <div class="product__page">
       <h1 class="product__back" role="button" onClick$={() => navigate(-1)}>
@@ -57,11 +66,19 @@ export default component$(() => {
               <div class="product__quantity">
                 <h4>Quantity:</h4>
                 <div class="product__quantity__buttons">
-                  <button>
+                  <button
+                    onClick$={() => {
+                      if (quantity.value > 1) quantity.value -= 1;
+                    }}
+                  >
                     <LuMinus class="w-3 h-3 inline" />
                   </button>
-                  <span role="button">1</span>
-                  <button>
+                  <span role="button">{quantity.value}</span>
+                  <button
+                    onClick$={() => {
+                      quantity.value += 1;
+                    }}
+                  >
                     <LuPlus class="w-3 h-3 inline" />
                   </button>
                 </div>
@@ -70,7 +87,16 @@ export default component$(() => {
                 <h4>{product?.value?.price} USDC</h4>
               </div>
             </div>
-            <button class="product__cart__button">Add to cart</button>
+            <button
+              class="product__cart__button"
+              onClick$={() => {
+                if (!product.value) return;
+                addToCart(product);
+                quantity.value = 1;
+              }}
+            >
+              Add to cart
+            </button>
           </div>
         </div>
       </div>

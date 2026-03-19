@@ -1,10 +1,8 @@
-import { component$ } from "@builder.io/qwik";
+import { $, component$ } from "@builder.io/qwik";
 import { useNavigate } from "@builder.io/qwik-city";
 import { LuShoppingBasket } from "@qwikest/icons/lucide";
 import { useCartHook } from "~/hooks/cart";
-// import type { DocumentHead } from "@builder.io/qwik-city";
 import "./store.css";
-// import Product from "../../assets/product.png?quality=100&jsx";
 
 export interface ProductProps {
   product: any;
@@ -13,7 +11,13 @@ export interface ProductProps {
 export const Store = component$<ProductProps>(({ product }) => {
   const nav = useNavigate();
   const products = product.items?.products ?? [];
-  const { addToCart } = useCartHook();
+
+  const { addProductToCart } = useCartHook();
+
+  const addToCart = $((item: any) => {
+    addProductToCart(item.id, 1, item);
+  });
+
   return (
     <div class="storefront">
       <div class="storefront__header">
@@ -43,11 +47,7 @@ export const Store = component$<ProductProps>(({ product }) => {
                 <h4 class="product__title">{item.title}</h4>
                 <h5 class="product__price">{item.price} USDC</h5>
               </div>
-              <button
-                onClick$={() => {
-                  addToCart(item.id, 1);
-                }}
-              >
+              <button onClick$={() => addToCart(item)}>
                 Add to cart <LuShoppingBasket />
               </button>
             </div>
@@ -57,14 +57,3 @@ export const Store = component$<ProductProps>(({ product }) => {
     </div>
   );
 });
-
-// export const head: DocumentHead = {
-//   title: "StoreFront",
-//   meta: [
-//     {
-//       name: "description",
-//       content:
-//         "Welcome to the StoreFront, where you can find the best products at unbeatable prices.",
-//     },
-//   ],
-// };
