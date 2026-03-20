@@ -36,36 +36,36 @@ export const useCartHook = () => {
           products: [{ id, quantity }],
         }),
       });
+
       const current = cart.items.value;
+
       const existing = current.products.find(
         (p: CartProduct) => p.id === item.id,
       );
-      let updated: CartProduct[];
+
       if (existing) {
-        updated = current.products.map((p: CartProduct) =>
-          p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p,
-        );
+        existing.quantity += 1; // ✅ mutate the proxy directly
       } else {
-        updated = [
-          ...current.products,
-          {
-            id: item.id,
-            title: item.title,
-            price: item.price,
-            quantity: 1,
-            thumbnail: item.images[0],
-          },
-        ];
+        current.products.push({
+          // ✅ push into the proxy array
+          id: item.id,
+          title: item.title,
+          price: item.price,
+          quantity: 1,
+          thumbnail: item.images[0],
+        });
       }
-      const newTotal = updated.reduce(
+
+      const newTotal = current.products.reduce(
         (sum: number, p: CartProduct) => sum + p.price * p.quantity,
         0,
       );
+
+      // Only reassign the scalars — don't touch products
       cart.items.value = {
         ...current,
-        products: updated,
-        totalProducts: updated.length,
-        totalQuantity: updated.reduce(
+        totalProducts: current.products.length,
+        totalQuantity: current.products.reduce(
           (sum: number, p: CartProduct) => sum + p.quantity,
           0,
         ),
@@ -96,52 +96,60 @@ export const useCartHook = () => {
   const updateQuantity = $((item: any) => {
     const cartData = cart.items.value;
 
-    // Find the specific item proxy
     const targetProduct = cartData.products.find(
       (p: CartProduct) => p.id === item.id,
     );
 
     if (targetProduct) {
-      // 1. Mutate the property directly!
-      targetProduct.quantity += 1;
-      cartData.totalQuantity += 1;
+      targetProduct.quantity += 1; // mutate proxy directly
 
-      // 2. Recalculate totals
       const newTotal = cartData.products.reduce(
         (sum: number, p: CartProduct) => sum + p.price * p.quantity,
         0,
       );
-      cartData.total = parseFloat(newTotal.toFixed(2));
+
+      // reassign scalars the same way addProductToCart does
+      cart.items.value = {
+        ...cartData,
+        totalQuantity: cartData.products.reduce(
+          (sum: number, p: CartProduct) => sum + p.quantity,
+          0,
+        ),
+        total: parseFloat(newTotal.toFixed(2)),
+      };
     }
   });
 
   const reduceQuantity = $((item: any) => {
     const cartData = cart.items.value;
 
-    // Find the index so we can safely remove it if quantity hits 0
     const targetIndex = cartData.products.findIndex(
       (p: CartProduct) => p.id === item.id,
     );
 
     if (targetIndex !== -1) {
       const targetProduct = cartData.products[targetIndex];
+      targetProduct.quantity -= 1; // mutate proxy directly
 
-      // Mutate directly
-      targetProduct.quantity -= 1;
-      cartData.totalQuantity -= 1;
-
-      // If the user reduces quantity to 0, completely remove the item
       if (targetProduct.quantity <= 0) {
-        cartData.products.splice(targetIndex, 1);
-        cartData.totalProducts = cartData.products.length;
+        cartData.products.splice(targetIndex, 1); // mutate proxy array directly
       }
 
-      // Recalculate totals
       const newTotal = cartData.products.reduce(
         (sum: number, p: CartProduct) => sum + p.price * p.quantity,
         0,
       );
-      cartData.total = parseFloat(newTotal.toFixed(2));
+
+      // reassign scalars the same way addProductToCart does
+      cart.items.value = {
+        ...cartData,
+        totalProducts: cartData.products.length,
+        totalQuantity: cartData.products.reduce(
+          (sum: number, p: CartProduct) => sum + p.quantity,
+          0,
+        ),
+        total: parseFloat(newTotal.toFixed(2)),
+      };
     }
   });
 
