@@ -58,6 +58,17 @@
   line-height: 120%;
 }
 
+@media screen and (max-width: 795px) {
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+  }
+  .nav__search {
+    order: 3;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
 @media screen and (max-width: 650px) {
   .navbar {
     padding: 0.5rem 5%;
