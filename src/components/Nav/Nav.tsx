@@ -1,4 +1,4 @@
-import { $, component$, type Signal } from "@builder.io/qwik";
+import { component$, type Signal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import { useContext } from "@builder.io/qwik";
 import { CartContext } from "~/context/cart.context";
@@ -10,14 +10,8 @@ export interface NavProps {
   searchInput: Signal<string>;
 }
 
-export const Nav = component$<NavProps>(({ openCart, searchInput }) => {
-  // const textInput = $(() => {});
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const searchResult = $(async (value: string) => {
-    searchInput.value = value;
-  });
+export const Nav = component$<NavProps>(({ openCart }) => {
   const cart = useContext(CartContext);
-  // const loc = useLocation()
   return (
     <div class="navbar">
       <Link href="/">
@@ -25,16 +19,10 @@ export const Nav = component$<NavProps>(({ openCart, searchInput }) => {
           StoreFront
         </h1>
       </Link>
-      {/* {loc.url.pathname === `/` && <input
-        type="text"
-        class="search"
-        placeholder="search products..."
-        onInput$={(_, target) => {
-          textInput();
-          searchResult(target.value);
-        }}
-      />} */}
-      <Search />
+
+      <div class="nav__search">
+        <Search />
+      </div>
       <div class="navbar__links">
         <Link href="/shop">
           <button type="button">shop</button>
