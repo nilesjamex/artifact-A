@@ -40,3 +40,10 @@ lerna-debug.log*
 # Yarn
 .yarn/*
 !.yarn/releases
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
