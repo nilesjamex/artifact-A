@@ -1,0 +1,145 @@
+test('measure INP', async ({ page }) => {
+  await page.goto('http://localhost:5173')
+
+  // Start observing INP via PerformanceObserver
+  await page.evaluate(() => {
+    window.__inpEntries = []
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        window.__inpEntries.push(entry)
+      }
+    }).observe({ type: 'event', buffered: true, durationThreshold: 16 })
+  })
+
+  // Simulate real interactions
+  await page.click('button')               // click interaction
+  await page.keyboard.press('Tab')         // keyboard interaction
+  await page.keyboard.press('Enter')       // keyboard interaction
+
+  // Wait for interactions to be processed
+  await page.waitForTimeout(1000)
+
+  // Collect and calculate INP (worst P98 interaction)
+  const inp = await page.evaluate(() => {
+    const entries = window.__inpEntries
+    if (!entries.length) return null
+
+    // Sort by duration  descending, take the worst interaction
+    entries.sort((a, b) => b.duration - a.duration)
+    return entries[0].duration
+  })
+
+  console.log(`INP: ${inp}ms`)
+  expect(inp).toBeLessThan(200) // Good threshold
+})
+
+
+
+
+
+// thorough testing
+
+test('measure INP across multiple interactions', async ({ page }) => {
+  await page.goto('http://localhost:5173')
+
+  // Inject INP observer before interactions
+  await page.evaluate(() => {
+    window.__inpEntries = []
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (['click', 'keydown', 'pointerdown'].includes(entry.name)) {
+          window.__inpEntries.push({
+            name: entry.name,
+            duration: entry.duration,
+            startTime: entry.startTime,
+          })
+        }
+      }
+    }).observe({ type: 'event', buffered: true, durationThreshold: 16 })
+  })
+
+  // Simulate a realistic user journey
+  await page.click('nav a:first-child')
+  await page.waitForTimeout(300)
+  await page.keyboard.press('Tab')
+  await page.waitForTimeout(300)
+  await page.click('button:first-child')
+  await page.waitForTimeout(300)
+
+  const inpReport = await page.evaluate(() => {
+    const entries = window.__inpEntries
+    if (!entries.length) return null
+
+    const durations = entries.map(e => e.duration).sort((a, b) => a - b)
+    const worst = durations[durations.length - 1]
+    const average = durations.reduce((a, b) => a + b, 0) / durations.length
+
+    return { entries, worst, average }
+  })
+
+  console.log('INP Report:', inpReport)
+  console.log(`Worst interaction: ${inpReport?.worst}ms`)
+  console.log(`Average interaction: ${inpReport?.average}ms`)
+
+  expect(inpReport?.worst).toBeLessThan(200)
+})
+
+
+
+/// storepage inp
+
+test('measure INP on shop page', async ({ page }) => {
+  await page.goto('http://localhost:5173/shop')
+
+  await page.evaluate(() => {
+    window.__inpEntries = []
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        window.__inpEntries.push({
+          name: entry.name,
+          duration: entry.duration,
+          startTime: entry.startTime,
+        })
+      }
+    }).observe({ type: 'event', buffered: true, durationThreshold: 16 })
+  })
+
+  // 1. Filter interactions
+  await page.click('button:has-text("Furnitures")')
+  await page.waitForTimeout(300)
+  await page.click('button:has-text("All")')
+  await page.waitForTimeout(300)
+
+  // 2. Sort interactions
+  await page.click('[aria-label="sort"]') // adjust selector to match your button
+  await page.waitForTimeout(200)
+  await page.click('text=Lowest Price')
+  await page.waitForTimeout(300)
+
+  // 3. Search interaction
+  await page.click('input[placeholder="search products..."]')
+  await page.type('input[placeholder="search products..."]', 'chair', { delay: 50 })
+  await page.waitForTimeout(300)
+
+  // 4. Add to cart
+  await page.click('button:has-text("Add to cart") >> nth=0')
+  await page.waitForTimeout(300)
+
+  const inpReport = await page.evaluate(() => {
+    const entries = window.__inpEntries
+    if (!entries.length) return null
+
+    const sorted = [...entries].sort((a, b) => b.duration - a.duration)
+    return {
+      all: entries,
+      worst: sorted[0],
+      average: entries.reduce((a, b) => a + b.duration, 0) / entries.length
+    }
+  })
+
+  console.log('All interactions:', inpReport?.all)
+  console.log('Worst INP:', inpReport?.worst)
+  console.log('Average INP:', inpReport?.average?.toFixed(2) + 'ms')
+
+  expect(inpReport?.worst?.duration).toBeLessThan(200)
+})
