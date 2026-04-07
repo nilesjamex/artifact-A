@@ -1,20 +1,24 @@
 import { test, expect } from "@playwright/test";
 
-// test('basic performance emulation', async ({ page }) => {
-//   const client = await page.context().newCDPSession(page)
-//   await client.send('Network.enable')
+// test.beforeEach(async ({ page, browserName }) => {
+//   test.skip(browserName !== "chromium", "CDP is only supported in Chromium-based browsers")
+//   const client = await page.context().newCDPSession(page);
+
+//   client.send('Network.enable');
+  
 //   await client.send('Network.emulateNetworkConditions', {
 //     offline: false,
-//     downloadThroughput: (4 * 1024 * 1024) / 8,
-//     uploadThroughput: (3 * 1024 * 1024) / 8,
-//     latency: 20
-//   })
+//     downloadThroughput: (2 * 1024 * 1024) / 8,
+//     uploadThroughput: (0.5 * 1024 * 1024) / 8,
+//     latency: 250,
+//   });
 
-//   await page.goto('http://localhost:5173')
-// })
+//   await client.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+// });
 
 test('get navigation time', async ({ page }) => {
-  await page.goto('http://localhost:5173')
+
+  await page.goto('http://localhost:5173', { waitUntil: "load" })
 
   const navigationTimingJson = await page.evaluate(() =>
     JSON.stringify(window.performance.getEntriesByType('navigation'))
@@ -25,30 +29,21 @@ test('get navigation time', async ({ page }) => {
 })
 
 test("display First Contentful Paint", async ({ page }) => {
-    await page.goto("http://localhost:5173");
-    const title = await page.title();
-    const paintTimingJson = await page.evaluate(() =>
-        JSON.stringify(window.performance.getEntriesByType("paint"))
-    )
-    const paintTiming = JSON.parse(paintTimingJson);
-    console.log("Paint Metrics:", paintTiming);
-    expect(title).toBe("StoreFront")
-})
 
-test("display Largest Contentful Paint", async ({page}) => {
-    await page.goto("localhost:5173");
-    const title = await page.title();
-    const lcpTimingJson = await page.evaluate(() =>
-        JSON.stringify(window.performance.getEntriesByType("largest-contentful-paint"))
-    )
-    const lcpTiming = JSON.parse(lcpTimingJson);
-    console.log("LCP Metrics:", lcpTiming);
-    expect(title).toBe("StoreFront")
+  await page.goto("http://localhost:5173", { waitUntil: "load" });
+  const title = await page.title();
+  const paintTimingJson = await page.evaluate(() =>
+      JSON.stringify(window.performance.getEntriesByType("paint"))
+  )
+  const paintTiming = JSON.parse(paintTimingJson);
+  console.log("Paint Metrics:", paintTiming);
+  expect(title).toBe("StoreFront")
 })
 
 test('basic performance largest contentful paint', async ({ page, browserName }) => {
   test.skip(browserName !== "chromium", "LCP is only supported in Chromium-based browsers")
-  await page.goto('http://localhost:5173')
+
+  await page.goto('http://localhost:5173', { waitUntil: "load" })
   const largestContentfulPaint = await page.evaluate(() => {
     return new Promise<number | undefined>((resolve) => {
       new PerformanceObserver((l) => {
@@ -66,23 +61,33 @@ test('basic performance largest contentful paint', async ({ page, browserName })
   console.log(parseFloat(String(largestContentfulPaint))) // 1139.39
 })
 
-test("display Cumulative Layout Shift", async ({page}) => {
-    await page.goto("http://localhost:5173");
-    const clsValue = await page.evaluate(() => {
+test("display Cumulative Layout Shift", async ({ page, browserName }) => {
+  test.skip(browserName !== "chromium", "only testing CLS on chromium-based browsers")
+  await page.goto("http://localhost:5173", { waitUntil: "load" });
+
+  const clsValue = await page.evaluate(() => {
     return new Promise<number>((resolve) => {
       let cumulativeScore = 0;
-      new PerformanceObserver((list) => {
+
+      const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           const layoutShift = entry as PerformanceEntry & { hadRecentInput: boolean; value: number };
           if (!layoutShift.hadRecentInput) {
             cumulativeScore += layoutShift.value;
           }
         }
+      });
+
+      observer.observe({ type: "layout-shift", buffered: true });
+
+      setTimeout(() => {
+        observer.disconnect();
         resolve(cumulativeScore);
-      }).observe({ type: 'layout-shift', buffered: true });
+      }, 2000);
     });
   });
 
   console.log("CLS Metrics:", clsValue);
-})
+  expect(clsValue).toBeLessThan(0.1);
+});
 
