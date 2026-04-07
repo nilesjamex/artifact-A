@@ -91,3 +91,4 @@ test("display Cumulative Layout Shift", async ({ page, browserName }) => {
   expect(clsValue).toBeLessThan(0.1);
 });
 
+// INP test code
