@@ -47,7 +47,7 @@ export const Store = component$<ProductProps>(({ product }) => {
                 <h4 class="product__title">{item.title}</h4>
                 <h5 class="product__price">{item.price} USDC</h5>
               </div>
-              <button onClick$={() => addToCart(item)}>
+              <button class="product__button" onClick$={() => addToCart(item)}>
                 Add to cart <LuShoppingBasket />
               </button>
             </div>
