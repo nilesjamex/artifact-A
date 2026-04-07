@@ -20,7 +20,7 @@ export const useGetProducts = routeLoader$(async () => {
 
 export default component$(() => {
   const categories = [
-    { id: 1, name: "All", code: "/category" },
+    { id: 1, name: "All", code: "" },
     { id: 2, name: "Beauty", code: "/category/beauty" },
     { id: 3, name: "Furnitures", code: "/category/furniture" },
     { id: 4, name: "Fragrances", code: "/category/fragrances" },
@@ -107,6 +107,7 @@ export default component$(() => {
         <div class="shop__filter">
           <button
             type="button"
+            aria-label="sort"
             onClick$={() => {
               showFilter.value = !showFilter.value;
             }}
