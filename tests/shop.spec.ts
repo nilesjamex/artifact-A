@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test";
 
+// global.d.ts or at the top of your test file
+export {};
+
 declare global {
   interface Window {
     __inpEntries: {
@@ -7,6 +10,11 @@ declare global {
       duration: number;
       startTime: number;
     }[];
+  }
+
+  // Extend the existing PerformanceEventTiming if your TS version is older
+  interface PerformanceEventTiming extends PerformanceEntry {
+    duration: number;
   }
 }
 
@@ -113,258 +121,131 @@ test("display Cumulative Layout Shift", async ({ page, browserName }) => {
 });
 
 // INP test code
-// test("display Interaction to Next Paint", async ({ page }) => {
-//   test.setTimeout(30000)
-//   await page.goto("http://localhost:5173/shop", {waitUntil: "load"});
-
-//   // await page.evaluate(() => {
-//   //   window.__inpEntries = [];
-//   //   new PerformanceObserver((l) => {
-//   //     for (const entry of l.getEntries()) {
-//   //       if (["click", "keydown", "keypress", "mousedown"].includes(entry.name)) {
-//   //         window.__inpEntries.push({
-//   //           name: entry.name,
-//   //           duration: entry.duration,
-//   //           startTime: entry.startTime
-//   //         })
-//   //       }
-//   //     }
-//   //   }).observe({type: "event", buffered: true})
-//   // })
-
-//    await page.addInitScript(() => {
-//     window.__inpEntries = [];
-//     new PerformanceObserver((list) => {
-//       for (const entry of list.getEntries()) {
-//         if (["click", "keydown", "keypress", "mousedown"].includes(entry.name)) {
-//           window.__inpEntries.push({
-//             name: entry.name,
-//             duration: entry.duration,
-//             startTime: entry.startTime
-//           });
-//         }
-//       }
-//     }).observe({ type: "event", buffered: true });
-//   });
-
-//   // interaction simulation
-//   await page.click(`button:has-text("Add to cart") >> nth=0`);
-//   await page.waitForTimeout(150);
-//   await page.click(`button:has-text("Add to cart") >> nth=2`);
-//   await page.waitForTimeout(150);
-//   await page.click(`button:has-text("Add to cart") >> nth=2`);
-//   await page.waitForTimeout(150);
-//   await page.click(".navbar__links>button:has-text('cart')");
-//   await page.waitForTimeout(400)
-//   await page.click(`.cart__header__close`);
-//   await page.waitForTimeout(150)
-//   await page.click(`button:has-text("Add to cart") >> nth=10`);
-//   await page.waitForTimeout(150);
-//   await page.click(`button:has-text("Add to cart") >> nth=20`);
-//   await page.waitForTimeout(150);
-//   await page.click(`button:has-text("Add to cart") >> nth=24`);
-//   await page.waitForTimeout(150);
-//   await page.click('button:has-text("Furnitures")')
-//   await page.waitForTimeout(150)
-//   // filter simulation
-//   await page.click('button:has-text("All")')
-//   await page.waitForTimeout(150)
-//   await page.click('button:has-text("Beauty")')
-//   await page.waitForTimeout(150)
-//   await page.click('button:has-text("Fragrances")')
-//   await page.waitForTimeout(150)
-//   await page.click('button:has-text("Groceries")')
-//   await page.waitForTimeout(150)
-//   await page.click('button:has-text("All")')
-//   await page.waitForTimeout(150)
-//   // sorting simulation
-//    await page.click('[aria-label="sort"]') // adjust selector to match your button
-//   await page.waitForTimeout(150)
-//   await page.click('button:has-text("Lowest Price")')
-//   await page.waitForTimeout(150)
-//    await page.click('[aria-label="sort"]') // adjust selector to match your button
-//   await page.waitForTimeout(150)
-//   await page.click('button:has-text("Highest Price")')
-//   await page.waitForTimeout(150)
-//    await page.click('[aria-label="sort"]') // adjust selector to match your button
-//   await page.waitForTimeout(150)
-//   await page.click('button:has-text("Oldest")')
-//   await page.waitForTimeout(150)
-//    await page.click('[aria-label="sort"]') // adjust selector to match your button
-//   await page.waitForTimeout(150)
-//   await page.click('button:has-text("Newest")')
-//   await page.waitForTimeout(150)
-//   // add to cart simulation
-//   await page.click(`button:has-text("Add to cart") >> nth=0`);
-//   await page.waitForTimeout(150);
-//   await page.click(`button:has-text("Add to cart") >> nth=2`);
-//   await page.waitForTimeout(150);
-//   await page.click(`button:has-text("Add to cart") >> nth=2`);
-//   await page.waitForTimeout(150);
-//   // open cart
-//   await page.click(".navbar__links>button:has-text('cart')");
-//   await page.waitForTimeout(400)
-//   // close cart
-//   await page.click(`.cart__header__close`);
-//   await page.waitForTimeout(150)
-//   await page.click(`button:has-text("Add to cart") >> nth=10`);
-//   await page.waitForTimeout(150);
-//   await page.click(`button:has-text("Add to cart") >> nth=20`);
-//   await page.waitForTimeout(150);
-//   await page.click(`button:has-text("Add to cart") >> nth=24`);
-//   await page.waitForTimeout(150);
-//   // search simulation
-//   await page.click(`input[placeholder="search products..."]`);
-//   await page.waitForTimeout(150);
-//   await page.press(`input[placeholder="search products..."]`, "h");
-//   await page.waitForTimeout(150);
-//   await page.press(`input[placeholder="search products..."]`, "u");
-//   await page.waitForTimeout(150);
-//   await page.press(`input[placeholder="search products..."]`, "a");
-//   await page.waitForTimeout(150);
-//   await page.press(`input[placeholder="search products..."]`, "w");
-//   await page.waitForTimeout(150);
-//   await page.press(`input[placeholder="search products..."]`, "e");
-//   await page.waitForTimeout(150);
-//   await page.press(`input[placeholder="search products..."]`, "i");
-//   await page.waitForTimeout(150);
-//   await page.click(`.search__item >> nth=0`);
-
-//   const inpReport = await page.evaluate(() => {
-//     const entries = window.__inpEntries || [];
-//     if (!entries.length) return null;
-
-//     const durations = entries.map(e => e.duration).sort((a, b) => a - b);
-//     const worst = durations[durations.length - 1];
-//     const sum = durations.reduce((a, b) => a + b, 0);
-//     const average = sum / durations.length;
-//     return { durations, worst, average, count: entries.length };
-//   });
-
-//   console.log('INP Report:', inpReport)
-//   console.log(`Durations: ${inpReport?.durations.join(", ")}ms`)
-//   console.log(`Worst interaction: ${inpReport?.worst}ms`)
-//   console.log(`Average interaction: ${inpReport?.average}ms`)
-// })
-
-test("display Interaction to Next Paint", async ({ page }) => {
+test("Interaction to Next Paint full traversal", async ({ page }) => {
   test.setTimeout(30000)
 
-  // MUST be before goto()
-  await page.addInitScript(() => {
+  await page.evaluate(() => {
     window.__inpEntries = [];
-    new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
+    new PerformanceObserver((l) => {
+      for (const entry of l.getEntries()) {
         if (["click", "keydown", "keypress", "mousedown"].includes(entry.name)) {
           window.__inpEntries.push({
             name: entry.name,
             duration: entry.duration,
             startTime: entry.startTime
-          });
+          })
         }
       }
-    }).observe({ type: "event", buffered: true });
-  });
+    }).observe({type: "event", buffered: true})
+  })
 
-  await page.goto("http://localhost:5173/shop", { waitUntil: "load" });
+  //  await page.addInitScript(() => {
+  //   window.__inpEntries = [];
+  //   new PerformanceObserver((list) => {
+  //     for (const entry of list.getEntries()) {
+  //       if (["click", "keydown", "keypress", "mousedown"].includes(entry.name)) {
+  //         window.__inpEntries.push({
+  //           name: entry.name,
+  //           duration: entry.duration,
+  //           startTime: entry.startTime
+  //         });
+  //       }
+  //     }
+  //   }).observe({ type: "event", buffered: true });
+  // });
 
-  // Helper to open and close cart safely
-  const openCart = async () => {
-    await page.click(".navbar__links>button:has-text('cart')");
-    await page.waitForSelector(".cart__header__close", { state: "visible", timeout: 5000 });
-  };
-  const closeCart = async () => {
-    await page.click(".cart__header__close");
-    await page.waitForSelector(".cart__header__close", { state: "hidden", timeout: 5000 });
-  };
+  await page.goto("http://localhost:5173/shop", {waitUntil: "load"});
 
   // interaction simulation
   await page.click(`button:has-text("Add to cart") >> nth=0`);
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(350);
   await page.click(`button:has-text("Add to cart") >> nth=2`);
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(350);
   await page.click(`button:has-text("Add to cart") >> nth=2`);
-  await page.waitForTimeout(150);
-  await openCart();
-  await closeCart();
+  await page.waitForTimeout(350);
+  await page.click(".navbar__links>button:has-text('cart')");
+  await page.waitForTimeout(400)
+  await page.click(`.cart__header__close`);
+  await page.waitForTimeout(350)
   await page.click(`button:has-text("Add to cart") >> nth=10`);
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(350);
   await page.click(`button:has-text("Add to cart") >> nth=20`);
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(350);
   await page.click(`button:has-text("Add to cart") >> nth=24`);
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(350);
   await page.click('button:has-text("Furnitures")')
-  await page.waitForTimeout(150)
-
+  await page.waitForTimeout(350)
   // filter simulation
   await page.click('button:has-text("All")')
-  await page.waitForTimeout(150)
+  await page.waitForTimeout(350)
   await page.click('button:has-text("Beauty")')
-  await page.waitForTimeout(150)
+  await page.waitForTimeout(350)
   await page.click('button:has-text("Fragrances")')
-  await page.waitForTimeout(150)
+  await page.waitForTimeout(350)
   await page.click('button:has-text("Groceries")')
-  await page.waitForTimeout(150)
+  await page.waitForTimeout(350)
   await page.click('button:has-text("All")')
-  await page.waitForTimeout(150)
-
+  await page.waitForTimeout(350)
   // sorting simulation
-  await page.click('[aria-label="sort"]')
-  await page.waitForTimeout(150)
+   await page.click('[aria-label="sort"]') // adjust selector to match your button
+  await page.waitForTimeout(350)
   await page.click('button:has-text("Lowest Price")')
-  await page.waitForTimeout(150)
-  await page.click('[aria-label="sort"]')
-  await page.waitForTimeout(150)
+  await page.waitForTimeout(350)
+   await page.click('[aria-label="sort"]') // adjust selector to match your button
+  await page.waitForTimeout(350)
   await page.click('button:has-text("Highest Price")')
-  await page.waitForTimeout(150)
-  await page.click('[aria-label="sort"]')
-  await page.waitForTimeout(150)
+  await page.waitForTimeout(350)
+   await page.click('[aria-label="sort"]') // adjust selector to match your button
+  await page.waitForTimeout(350)
   await page.click('button:has-text("Oldest")')
-  await page.waitForTimeout(150)
-  await page.click('[aria-label="sort"]')
-  await page.waitForTimeout(150)
+  await page.waitForTimeout(350)
+   await page.click('[aria-label="sort"]') // adjust selector to match your button
+  await page.waitForTimeout(350)
   await page.click('button:has-text("Newest")')
-  await page.waitForTimeout(150)
-
+  await page.waitForTimeout(350)
   // add to cart simulation
   await page.click(`button:has-text("Add to cart") >> nth=0`);
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(350);
   await page.click(`button:has-text("Add to cart") >> nth=2`);
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(350);
   await page.click(`button:has-text("Add to cart") >> nth=2`);
-  await page.waitForTimeout(150);
-
-  // open and close cart
-  await openCart();
-  await closeCart();
-
+  await page.waitForTimeout(350);
+  // open cart
+  await page.click(".navbar__links>button:has-text('cart')");
+  await page.waitForTimeout(400)
+  // close cart
+  await page.click(`.cart__header__close`);
+  await page.waitForTimeout(350)
   await page.click(`button:has-text("Add to cart") >> nth=10`);
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(350);
   await page.click(`button:has-text("Add to cart") >> nth=20`);
-  await page.waitForTimeout(150);
-  await page.click(`button:has-text("Add to cart") >> nth=24`);
-  await page.waitForTimeout(150);
-
+  await page.waitForTimeout(350);
+  await page.click(`button:has-text("Add to cart") >> nth=10`);
+  await page.waitForTimeout(350);
   // search simulation
-  const searchInput = page.locator(`input[placeholder="search products..."]`);
-  await searchInput.waitFor({ state: "visible", timeout: 5000 });
-  await searchInput.click();
-  await page.waitForTimeout(150);
-  for (const key of ["h", "u", "a", "w", "e", "i"]) {
-    await searchInput.press(key);
-    await page.waitForTimeout(150);
-  }
-  await page.waitForSelector(".search__item", { state: "visible", timeout: 5000 });
+  await page.click(`input[placeholder="search products..."]`);
+  await page.waitForTimeout(350);
+  await page.press(`input[placeholder="search products..."]`, "h");
+  await page.waitForTimeout(350);
+  await page.press(`input[placeholder="search products..."]`, "u");
+  await page.waitForTimeout(350);
+  await page.press(`input[placeholder="search products..."]`, "a");
+  await page.waitForTimeout(350);
+  await page.press(`input[placeholder="search products..."]`, "w");
+  await page.waitForTimeout(350);
+  await page.press(`input[placeholder="search products..."]`, "e");
+  await page.waitForTimeout(350);
+  await page.press(`input[placeholder="search products..."]`, "i");
+  await page.waitForTimeout(350);
   await page.click(`.search__item >> nth=0`);
-  await page.waitForTimeout(300);
 
   const inpReport = await page.evaluate(() => {
     const entries = window.__inpEntries || [];
     if (!entries.length) return null;
 
-    const durations = entries.map((e: any) => e.duration).sort((a: number, b: number) => a - b);
+    const durations = entries.map(e => e.duration).sort((a, b) => a - b);
     const worst = durations[durations.length - 1];
-    const sum = durations.reduce((a: number, b: number) => a + b, 0);
+    const sum = durations.reduce((a, b) => a + b, 0);
     const average = sum / durations.length;
     return { durations, worst, average, count: entries.length };
   });
@@ -373,4 +254,190 @@ test("display Interaction to Next Paint", async ({ page }) => {
   console.log(`Durations: ${inpReport?.durations.join(", ")}ms`)
   console.log(`Worst interaction: ${inpReport?.worst}ms`)
   console.log(`Average interaction: ${inpReport?.average}ms`)
+})
+
+test("Add to Cart INP test", async ({ page }) => {
+   test.setTimeout(30000)
+  await page.goto("http://localhost:5173/shop", {waitUntil: "load"});
+
+  await page.evaluate(() => {
+    window.__inpEntries = [];
+    new PerformanceObserver((l) => {
+      for (const entry of l.getEntries()) {
+        if (["click", "keydown", "keypress", "mousedown"].includes(entry.name)) {
+          window.__inpEntries.push({
+            name: entry.name,
+            duration: entry.duration,
+            startTime: entry.startTime
+          })
+        }
+      }
+    }).observe({type: "event", buffered: true})
+  })
+
+   // interaction simulation
+  await page.click(`button:has-text("Add to cart") >> nth=0`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=2`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=2`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=10`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=20`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=24`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=10`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=20`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=24`);
+  await page.waitForTimeout(150);
+  await page.click(".navbar__links>button:has-text('cart')");
+  await page.waitForTimeout(400)
+  await page.click(`.cart__header__close`);
+  await page.waitForTimeout(150)
+  await page.click(`button:has-text("Add to cart") >> nth=10`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=20`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=24`);
+  await page.waitForTimeout(150);
+
+  const inpReport = await page.evaluate(() => {
+    const entries = window.__inpEntries || [];
+    if (!entries.length) return null;
+
+    const durations = entries.map(e => e.duration).sort((a, b) => a - b);
+    const worst = durations[durations.length - 1];
+    const sum = durations.reduce((a, b) => a + b, 0);
+    const average = sum / durations.length;
+    return {durations, worst, average, count: entries.length};
+  });
+
+   console.log('INP Report:', inpReport)
+   console.log(`Durations: ${inpReport?.durations.join(", ")}ms`)
+  console.log(`Worst interaction: ${inpReport?.worst}ms`)
+  console.log(`Average interaction: ${inpReport?.average}ms`)
+
+})
+
+test("KeyStroke INP test", async ({ page }) => {
+   test.setTimeout(30000)
+  await page.goto("http://localhost:5173/shop", {waitUntil: "load"});
+
+  await page.evaluate(() => {
+    window.__inpEntries = [];
+    new PerformanceObserver((l) => {
+      for (const entry of l.getEntries()) {
+        if (["click", "keydown", "keypress", "mousedown"].includes(entry.name)) {
+          window.__inpEntries.push({
+            name: entry.name,
+            duration: entry.duration,
+            startTime: entry.startTime
+          })
+        }
+      }
+    }).observe({type: "event", buffered: true})
+  })
+
+  // interaction simulation
+  await page.click(`input[placeholder="search products..."]`);
+  await page.waitForTimeout(150);
+  await page.press(`input[placeholder="search products..."]`, "h");
+  await page.waitForTimeout(150);
+  await page.press(`input[placeholder="search products..."]`, "u");
+  await page.waitForTimeout(150);
+  await page.press(`input[placeholder="search products..."]`, "a");
+  await page.waitForTimeout(150);
+  await page.press(`input[placeholder="search products..."]`, "w");
+  await page.waitForTimeout(150);
+  await page.press(`input[placeholder="search products..."]`, "e");
+  await page.waitForTimeout(150);
+  await page.press(`input[placeholder="search products..."]`, "i");
+  await page.waitForTimeout(150);
+  await page.click(`.search__item >> nth=0`);
+
+  // report
+   const inpReport = await page.evaluate(() => {
+    const entries = window.__inpEntries || [];
+    if (!entries.length) return null;
+
+    const durations = entries.map(e => e.duration).sort((a, b) => a - b);
+    const worst = durations[durations.length - 1];
+    const sum = durations.reduce((a, b) => a + b, 0);
+    const average = sum / durations.length;
+    return {durations, worst, average, count: entries.length};
+  });
+
+   console.log('INP Report:', inpReport)
+   console.log(`Durations: ${inpReport?.durations.join(", ")}ms`)
+  console.log(`Worst interaction: ${inpReport?.worst}ms`)
+  console.log(`Average interaction: ${inpReport?.average}ms`)
+})
+
+test("Cart Interaction INP test", async ({ page }) => {
+   test.setTimeout(30000)
+  await page.goto("http://localhost:5173/shop", {waitUntil: "load"});
+
+  await page.evaluate(() => {
+    window.__inpEntries = [];
+    new PerformanceObserver((l) => {
+      for (const entry of l.getEntries()) {
+        if (["click", "keydown", "keypress", "mousedown"].includes(entry.name)) {
+          window.__inpEntries.push({
+            name: entry.name,
+            duration: entry.duration,
+            startTime: entry.startTime
+          })
+        }
+      }
+    }).observe({type: "event", buffered: true})
+  })
+
+  // interaction simulation
+  await page.click(".navbar__links>button:has-text('cart')");
+  await page.waitForTimeout(400)
+  await page.click(`.cart__header__close`);
+  await page.waitForTimeout(150)
+  await page.click(`button:has-text("Add to cart") >> nth=10`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=20`);
+  await page.waitForTimeout(150);
+  await page.click(`button:has-text("Add to cart") >> nth=24`);
+  await page.waitForTimeout(150);
+  await page.click(".navbar__links>button:has-text('cart')");
+  await page.waitForTimeout(400)
+  await page.click(`.ccart__quantity__buttons__plus >> nth=0`);
+  await page.waitForTimeout(150)
+  await page.click(`.ccart__quantity__buttons__plus >> nth=0`);
+  await page.waitForTimeout(150)
+  await page.click(`.ccart__quantity__buttons__plus >> nth=0`);
+  await page.waitForTimeout(150)
+  await page.click(`.ccart__quantity__buttons__plus >> nth=1`);
+  await page.waitForTimeout(150)
+  await page.click(`.ccart__quantity__buttons__plus >> nth=2`);
+  await page.waitForTimeout(150)
+  await page.click(`.cart__header__close`);
+  await page.waitForTimeout(150)
+  await page.click(`button:has-text("Add to cart") >> nth=10`);
+
+  // report
+  const inpReport = await page.evaluate(() => {
+    const entries = window.__inpEntries || [];
+    if (!entries.length) return null;
+
+    const durations = entries.map(e => e.duration).sort((a, b) => a - b);
+    const worst = durations[durations.length - 1];
+    const sum = durations.reduce((a, b) => a + b, 0);
+    const average = sum / durations.length;
+    return {durations, worst, average, count: entries.length};
+  });
+
+   console.log('INP Report:', inpReport)
+   console.log(`Durations: ${inpReport?.durations.join(", ")}ms`)
+  console.log(`Worst interaction: ${inpReport?.worst}ms`)
+  console.log(`Average interaction: ${inpReport?.average}ms`)
+
 })

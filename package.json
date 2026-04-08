@@ -39,5 +39,10 @@
     "undici": "*",
     "vite": "7.3.1",
     "vite-tsconfig-paths": "^4.2.1"
+  },
+  "dependencies": {
+    "lighthouse": "^12.8.2",
+    "playwright-lighthouse": "^4.0.0",
+    "web-vitals": "^5.2.0"
   }
 }
