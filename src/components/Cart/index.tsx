@@ -69,6 +69,7 @@ export const Cart = component$<CartProps>(({ openCart }) => {
                       onClick$={() => {
                         updateQuantity(item);
                       }}
+                      class="ccart__quantity__buttons__plus"
                     >
                       <LuPlus class="w-3 h-3 inline" />
                     </button>
