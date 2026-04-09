@@ -1,4 +1,7 @@
 import { test, expect, Page } from "@playwright/test";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 interface INPEntry {
   name: string;
@@ -19,6 +22,34 @@ declare global {
     __inpEntries?: INPEntry[];
     __inpObserver?: PerformanceObserver;
   }
+}
+
+// path to save csv file
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const CSV_PATH = path.join(__dirname, "homepage_inp_comprehensive_results.csv");
+
+/**
+ * Logs the INP report to the console and appends a row to the CSV.
+ * @param {number} iteration - Current run index (1-based)
+ * @param {string} label     - Test name used as the CSV category
+ * @param {object|null} result - Result from collectINPReport()
+ */
+
+function reportINP(iteration: number, label: string, result: INPReport | null): void {
+  console.log("--- INP Report ---");
+
+  if (!result) {
+    console.warn("No interactions captured — INP report unavailable.");
+    return;
+  }
+
+  console.log(`Total Unique Interactions : ${result.count}`);
+  console.log(`Durations                 : ${result.durations.join(", ")}ms`);
+  console.log(`Worst interaction (INP)   : ${result.worst}ms`);
+  console.log(`Average interaction       : ${result.average}ms`);
+
+  const row = `${iteration},${label},${result.count},${result.worst},${result.average}\n`;
+  fs.appendFileSync(CSV_PATH, row);
 }
 
 const setupINPObserver = async (page: Page): Promise<void> => {
@@ -134,6 +165,12 @@ test.describe("Interaction to Next Paint Tests", () => {
   // test only in chromium browsers bc of cdp support
   test.skip(({ browserName}) => browserName !== 'chromium', 'CDP is only supported in Chromium');
 
+  test.beforeAll(() => {
+    if(!fs.existsSync(CSV_PATH)) {
+    const headers = "Iteration,Scenario,Total_Interactions,Worst_INP_ms,Average_INP_ms\n";
+    fs.writeFileSync(CSV_PATH, headers)
+    }
+  })
   // setup network throttling and cpu throttling for all tests
    test.beforeEach(async ({ page }) => {
       const client = await page.context().newCDPSession(page);
@@ -150,26 +187,18 @@ test.describe("Interaction to Next Paint Tests", () => {
       await client.send('Emulation.setCPUThrottlingRate', { rate: 4 });
     });
 
-    test("Add to Cart INP test", async ({ page }) => {
+   for (let i = 1; i <= 30; i++) {
+     test(`[${i}] Add to Cart INP test`, async ({ page }) => {
       await page.goto("http://localhost:5173", { waitUntil: "load" });
       await setupINPObserver(page)
       await addToCartInteraction(page);
 
       const inpResult = await collectINPReport(page);
 
-       console.log("--- INP Report ---");
-        if (!inpResult) {
-          console.warn("No interactions captured — INP report unavailable.");
-          return;
-        }
-
-        console.log(`Total Unique Interactions : ${inpResult.count}`);
-        console.log(`Durations                 : ${inpResult.durations.join(", ")}ms`);
-        console.log(`Worst interaction (INP)   : ${inpResult.worst}ms`);
-        console.log(`Average interaction       : ${inpResult.average}ms`);
+      reportINP(i, "Add to Cart INP test", inpResult);
     })
 
-    test("KeyStroke INP test", async ({ page }) => {
+    test(`[${i}] KeyStroke INP test`, async ({ page }) => {
       await page.goto("http://localhost:5173", { waitUntil: "load" });
       await setupINPObserver(page)
 
@@ -192,19 +221,10 @@ test.describe("Interaction to Next Paint Tests", () => {
 
       const inpResult = await collectINPReport(page);
 
-      console.log("--- INP Report ---");
-      if (!inpResult) {
-        console.warn("No interactions captured — INP report unavailable.");
-        return;
-      }
-
-      console.log(`Total Unique Interactions : ${inpResult.count}`);
-      console.log(`Durations                 : ${inpResult.durations.join(", ")}ms`);
-      console.log(`Worst interaction (INP)   : ${inpResult.worst}ms`);
-      console.log(`Average interaction       : ${inpResult.average}ms`);
+      reportINP(i, "KeyStroke INP test", inpResult);
     })
 
-    test("Cart Interaction INP test", async ({ page }) => {
+    test(`[${i}] Cart Interaction INP test`, async ({ page }) => {
       await page.goto("http://localhost:5173", { waitUntil: "load" });
       await setupINPObserver(page)
 
@@ -228,19 +248,10 @@ test.describe("Interaction to Next Paint Tests", () => {
 
       const inpResult = await collectINPReport(page);
 
-      console.log("--- INP Report ---");
-      if (!inpResult) {
-        console.warn("No interactions captured — INP report unavailable.");
-        return;
-      }
-
-      console.log(`Total Unique Interactions : ${inpResult.count}`);
-      console.log(`Durations                 : ${inpResult.durations.join(", ")}ms`);
-      console.log(`Worst interaction (INP)   : ${inpResult.worst}ms`);
-      console.log(`Average interaction       : ${inpResult.average}ms`);
+      reportINP(i, "Cart Interaction INP test", inpResult);
     })
 
-    test("Full INP Traversal Test", async ({ page }) => {
+    test(`[${i}] Full INP Traversal Test`, async ({ page }) => {
       await page.goto("http://localhost:5173", { waitUntil: "load" });
       await setupINPObserver(page)
 
@@ -267,15 +278,7 @@ test.describe("Interaction to Next Paint Tests", () => {
 
       const inpResult = await collectINPReport(page);
 
-      console.log("--- INP Report ---");
-      if (!inpResult) {
-        console.warn("No interactions captured — INP report unavailable.");
-        return;
-      }
-
-      console.log(`Total Unique Interactions : ${inpResult.count}`);
-      console.log(`Durations                 : ${inpResult.durations.join(", ")}ms`);
-      console.log(`Worst interaction (INP)   : ${inpResult.worst}ms`);
-      console.log(`Average interaction       : ${inpResult.average}ms`);
+      reportINP(i, "Full INP Traversal Test", inpResult);
     })
+   }
 })
