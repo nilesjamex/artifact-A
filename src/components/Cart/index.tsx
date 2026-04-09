@@ -61,6 +61,7 @@ export const Cart = component$<CartProps>(({ openCart }) => {
                       onClick$={() => {
                         reduceQuantity(item);
                       }}
+                      aria-label="plus"
                     >
                       <LuMinus class="w-3 h-3 inline" />
                     </button>
