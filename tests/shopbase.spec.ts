@@ -12,7 +12,7 @@ test.describe("shop web vitals - 30 Benchmark tests", () => {
 
   //  creating csv file and writing headers before starting tests
   test.beforeAll(() => {
-    const headers = "Test,Navigation Time (ms),FCP (ms),LCP (ms),CLS\n";
+    const headers = "Test,Navigation Time (ms),FCP (ms),LCP (ms),CLS (ms),TBT (ms)\n";
     fs.writeFileSync(CSV_PATH, headers)
   })
 
@@ -83,13 +83,34 @@ test.describe("shop web vitals - 30 Benchmark tests", () => {
       }, 1000);
     });
 
-    return { navTime, fcp, lcp, cls };
+    const tbt = await new Promise<number>((resolve) => {
+      let tbtMetric = 0;
+
+        const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          // TBT only counts the "excess" over 50ms
+          if (entry.duration > 50) {
+            tbtMetric += (entry.duration - 50);
+          }
+        }
+      });
+
+      // Start observing
+      observer.observe({ type: 'longtask', buffered: true });
+
+      setTimeout(() => {
+        observer.disconnect();
+        resolve(tbtMetric)
+      }, 2000);
+    });
+
+    return { navTime, fcp, lcp, cls, tbt };
   });
 
     console.log(`Run ${i} completed. Nav: ${metrics.navTime.toFixed(2)}ms, LCP: ${metrics.lcp.toFixed(2)}ms`);
 
     // 6. Append this run's data directly to the CSV
-    const csvRow = `${i},${metrics.navTime.toFixed(2)},${metrics.fcp.toFixed(2)},${metrics.lcp.toFixed(2)},${metrics.cls.toFixed(4)}\n`;
+    const csvRow = `${i},${metrics.navTime.toFixed(2)},${metrics.fcp.toFixed(2)},${metrics.lcp.toFixed(2)},${metrics.cls.toFixed(4)},${metrics.tbt.toFixed(2)}\n`;
     fs.appendFileSync(CSV_PATH, csvRow);
     })
   }
