@@ -34,8 +34,8 @@ test.describe("shop web vitals - 30 Benchmark tests", () => {
 
   for (let i = 1; i <= 30; i++) {
   test(`Test ${i}: Measure All Web Vitals`, async ({ page }) => {
-    await page.goto("http://localhost:5173", { waitUntil: "load"});
-    await expect(page).toHaveTitle("StoreFront");
+    await page.goto("http://localhost:4173/shop", { waitUntil: "load"});
+    await expect(page).toHaveTitle("Shop");
 
     const metrics = await page.evaluate(async () => {
         

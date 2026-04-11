@@ -189,7 +189,7 @@ test.describe("Interaction to Next Paint Tests", () => {
 
    for (let i = 1; i <= 30; i++) {
      test(`[${i}] Add to Cart INP test`, async ({ page }) => {
-      await page.goto("http://localhost:5173", { waitUntil: "load" });
+      await page.goto("http://localhost:4173", { waitUntil: "load" });
       await setupINPObserver(page)
       await addToCartInteraction(page);
 
@@ -199,7 +199,7 @@ test.describe("Interaction to Next Paint Tests", () => {
     })
 
     test(`[${i}] KeyStroke INP test`, async ({ page }) => {
-      await page.goto("http://localhost:5173", { waitUntil: "load" });
+      await page.goto("http://localhost:4173", { waitUntil: "load" });
       await setupINPObserver(page)
 
       // interaction simulation
@@ -225,7 +225,7 @@ test.describe("Interaction to Next Paint Tests", () => {
     })
 
     test(`[${i}] Cart Interaction INP test`, async ({ page }) => {
-      await page.goto("http://localhost:5173", { waitUntil: "load" });
+      await page.goto("http://localhost:4173", { waitUntil: "load" });
       await setupINPObserver(page)
 
       await page.click(".navbar__links>button:has-text('cart')");
@@ -252,7 +252,7 @@ test.describe("Interaction to Next Paint Tests", () => {
     })
 
     test(`[${i}] Full INP Traversal Test`, async ({ page }) => {
-      await page.goto("http://localhost:5173", { waitUntil: "load" });
+      await page.goto("http://localhost:4173", { waitUntil: "load" });
       await setupINPObserver(page)
 
       // interaction simulation
