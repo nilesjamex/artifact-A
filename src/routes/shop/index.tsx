@@ -120,6 +120,7 @@ export default component$(() => {
                 <button
                   class={filter.id === selectedFilter.value ? "active" : ""}
                   key={filter.id}
+                  aria-label={filter.name}
                   onClick$={() => {
                     if (selectedFilter.value !== filter.id) {
                       selectedFilter.value = filter.id;
