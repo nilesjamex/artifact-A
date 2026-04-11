@@ -35,7 +35,7 @@ const CSV_PATH = path.join(__dirname, "homepage_inp_comprehensive_results.csv");
  * @param {object|null} result - Result from collectINPReport()
  */
 
-function reportINP(iteration: number, label: string, result: INPReport | null): void {
+const reportINP = (iteration: number, label: string, result: INPReport | null): void => {
   console.log("--- INP Report ---");
 
   if (!result) {
