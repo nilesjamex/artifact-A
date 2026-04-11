@@ -1,0 +1,121 @@
+Iteration,Scenario,Total_Interactions,Worst_INP_ms,Average_INP_ms
+1,Add to Cart INP test,7,48,28.57
+1,KeyStroke INP test,7,48,32.00
+1,Cart Interaction INP test,6,104,48.00
+1,Full INP Traversal Test,15,40,20.27
+2,Add to Cart INP test,11,32,18.18
+2,KeyStroke INP test,7,32,22.86
+2,Cart Interaction INP test,6,104,44.00
+2,Full INP Traversal Test,20,32,18.80
+3,Add to Cart INP test,11,24,17.45
+3,KeyStroke INP test,7,40,22.86
+3,Cart Interaction INP test,6,112,49.33
+3,Full INP Traversal Test,17,24,17.88
+4,Add to Cart INP test,7,32,19.43
+4,KeyStroke INP test,7,24,20.57
+4,Cart Interaction INP test,6,112,48.00
+4,Full INP Traversal Test,24,48,20.00
+5,Add to Cart INP test,9,32,18.67
+5,KeyStroke INP test,7,24,17.14
+5,Cart Interaction INP test,6,112,42.67
+5,Full INP Traversal Test,20,24,18.00
+6,Add to Cart INP test,13,32,19.08
+6,KeyStroke INP test,7,32,22.86
+6,Cart Interaction INP test,6,112,49.33
+6,Full INP Traversal Test,15,24,18.67
+7,Add to Cart INP test,12,24,18.00
+7,KeyStroke INP test,7,40,20.57
+7,Cart Interaction INP test,6,88,41.33
+7,Full INP Traversal Test,15,48,19.73
+8,Add to Cart INP test,11,40,18.91
+8,KeyStroke INP test,7,24,18.29
+8,Cart Interaction INP test,6,104,49.33
+8,Full INP Traversal Test,17,32,18.35
+9,Add to Cart INP test,5,40,22.40
+9,KeyStroke INP test,7,32,22.86
+9,Cart Interaction INP test,7,96,41.14
+9,Full INP Traversal Test,18,64,22.67
+10,Add to Cart INP test,9,48,21.33
+10,KeyStroke INP test,7,32,21.71
+10,Cart Interaction INP test,6,104,45.33
+10,Full INP Traversal Test,14,32,19.43
+11,Add to Cart INP test,10,48,19.20
+11,KeyStroke INP test,7,24,20.57
+11,Cart Interaction INP test,6,88,42.67
+11,Full INP Traversal Test,16,24,18.50
+12,Add to Cart INP test,8,24,19.00
+12,KeyStroke INP test,7,32,21.71
+12,Cart Interaction INP test,6,112,44.00
+12,Full INP Traversal Test,15,32,18.13
+13,Add to Cart INP test,8,40,21.00
+13,KeyStroke INP test,7,24,19.43
+13,Cart Interaction INP test,6,120,52.00
+13,Full INP Traversal Test,18,24,17.78
+14,Add to Cart INP test,11,40,19.64
+14,KeyStroke INP test,7,32,20.57
+14,Cart Interaction INP test,6,120,48.00
+14,Full INP Traversal Test,17,32,18.82
+15,Add to Cart INP test,10,48,21.60
+15,KeyStroke INP test,7,24,19.43
+15,Cart Interaction INP test,7,112,43.43
+15,Full INP Traversal Test,16,32,18.50
+16,Add to Cart INP test,10,48,19.20
+16,KeyStroke INP test,7,24,19.43
+16,Cart Interaction INP test,6,112,45.33
+16,Full INP Traversal Test,17,24,17.41
+17,Add to Cart INP test,7,32,22.86
+17,KeyStroke INP test,7,32,22.86
+17,Cart Interaction INP test,6,120,49.33
+17,Full INP Traversal Test,17,40,19.29
+18,Add to Cart INP test,9,32,20.44
+18,KeyStroke INP test,7,24,19.43
+18,Cart Interaction INP test,6,88,38.67
+18,Full INP Traversal Test,17,40,19.29
+19,Add to Cart INP test,9,32,18.67
+19,KeyStroke INP test,7,24,19.43
+19,Cart Interaction INP test,6,120,48.00
+19,Full INP Traversal Test,13,24,17.23
+20,Add to Cart INP test,11,24,18.18
+20,KeyStroke INP test,7,24,17.14
+20,Cart Interaction INP test,7,104,36.57
+20,Full INP Traversal Test,14,24,20.00
+21,Add to Cart INP test,8,32,19.00
+21,KeyStroke INP test,7,24,18.29
+21,Cart Interaction INP test,6,120,45.33
+21,Full INP Traversal Test,17,40,19.29
+22,Add to Cart INP test,8,32,20.00
+22,KeyStroke INP test,7,32,20.57
+22,Cart Interaction INP test,6,112,48.00
+22,Full INP Traversal Test,15,48,20.80
+23,Add to Cart INP test,11,40,18.91
+23,KeyStroke INP test,7,32,21.71
+23,Cart Interaction INP test,6,112,48.00
+23,Full INP Traversal Test,20,24,17.60
+24,Add to Cart INP test,10,24,17.60
+24,KeyStroke INP test,7,24,18.29
+24,Cart Interaction INP test,6,80,40.00
+24,Full INP Traversal Test,15,32,19.73
+25,Add to Cart INP test,13,24,17.23
+25,KeyStroke INP test,7,32,22.86
+25,Cart Interaction INP test,6,120,50.67
+25,Full INP Traversal Test,17,40,17.41
+26,Add to Cart INP test,8,24,18.00
+26,KeyStroke INP test,7,24,18.29
+26,Cart Interaction INP test,6,104,44.00
+26,Full INP Traversal Test,17,24,18.35
+27,Add to Cart INP test,11,24,17.45
+27,KeyStroke INP test,7,24,17.14
+27,Cart Interaction INP test,6,112,45.33
+27,Full INP Traversal Test,15,32,19.20
+28,Add to Cart INP test,13,24,17.23
+28,KeyStroke INP test,7,24,17.14
+28,Cart Interaction INP test,6,120,48.00
+28,Full INP Traversal Test,18,32,17.78
+29,Add to Cart INP test,13,24,17.23
+29,KeyStroke INP test,7,32,21.71
+29,Cart Interaction INP test,6,112,52.00
+29,Full INP Traversal Test,15,32,18.13
+30,Add to Cart INP test,10,48,20.00
+30,KeyStroke INP test,7,32,21.71
+30,Cart Interaction INP test,7,120,49.14
+30,Full INP Traversal Test,19,40,19.37
