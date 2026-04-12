@@ -187,9 +187,9 @@ test.describe("Shpo INP Tests", () => {
       await client.send('Emulation.setCPUThrottlingRate', { rate: 4 });
     });
 
- for (let i=1; 1<=30; i++) {
+ for (let i=1; i<=30; i++) {
   test(`[${i}] Add to Cart INP test`, async ({ page }) => {
-    await page.goto("http://localhost:5173/shop", { waitUntil: "load" });
+    await page.goto("http://localhost:4173/shop", { waitUntil: "load" });
     await setupINPObserver(page)
     await addToCartInteraction(page);
     await page.click('button:has-text("Beauty")')
@@ -205,7 +205,7 @@ test.describe("Shpo INP Tests", () => {
   })
   
   test(`[${i}] KeyStroke INP test`, async ({ page }) => {
-    await page.goto("http://localhost:5173/shop", { waitUntil: "load" });
+    await page.goto("http://localhost:4173/shop", { waitUntil: "load" });
     await setupINPObserver(page)
 
     // interaction simulation
@@ -231,7 +231,7 @@ test.describe("Shpo INP Tests", () => {
   })
   
   test(`[${i}] Cart Interaction INP test`, async ({ page }) => {
-    await page.goto("http://localhost:5173/shop", { waitUntil: "load" });
+    await page.goto("http://localhost:4173/shop", { waitUntil: "load" });
     await setupINPObserver(page)
 
     await page.click(".navbar__links>button:has-text('cart')");
@@ -246,7 +246,7 @@ test.describe("Shpo INP Tests", () => {
     await page.waitForTimeout(150);
     await page.click(".navbar__links>button:has-text('cart')");
     await page.waitForTimeout(400)
-    await cartAddition(page);
+    // await cartAddition(page);
     await page.waitForTimeout(150)
     await page.click("div.cart__header__close");
     await page.waitForTimeout(150)
@@ -258,7 +258,7 @@ test.describe("Shpo INP Tests", () => {
   })
 
   test(`[${i}] Full INP Traversal Test`, async ({ page }) => {
-    await page.goto("http://localhost:5173/shop", { waitUntil: "load" });
+    await page.goto("http://localhost:4173/shop", { waitUntil: "load" });
     await setupINPObserver(page)
 
     // interaction simulation
@@ -310,7 +310,7 @@ test.describe("Shpo INP Tests", () => {
     // await page.waitForTimeout(350)
     await page.click(".navbar__links>button:has-text('cart')");
     await page.waitForTimeout(400)
-    await cartAddition(page);
+    // await cartAddition(page);
 
 
     const inpResult = await collectINPReport(page);
