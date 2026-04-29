@@ -3,7 +3,7 @@ import { Link } from "@builder.io/qwik-city";
 import { useContext } from "@builder.io/qwik";
 import { CartContext } from "~/context/cart.context";
 import { Search } from "~/components/Search/Search";
-import "./Nav.css";
+import "./nav.css";
 
 export interface NavProps {
   openCart: Signal<boolean>;
